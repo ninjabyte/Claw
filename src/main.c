@@ -5,6 +5,9 @@
  *      Author: Benedikt
  */
 
+#include "parser.h"
+#include "io.h"
+
 int main(int argc, char *argv[])
 {
   if(argc < 2) {
