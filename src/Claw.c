@@ -18,7 +18,7 @@ int parse_line(char line[]);
 
 #define LINE_LENGTH 100
 
-const char* keywords[] = {
+const char keywords[][] = {
 		"break", "continue", "else", "elseif", "end", "false",
 		"for", "function", "if", "return", "true", "var", "while"};
 
