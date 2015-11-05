@@ -44,6 +44,10 @@ enum TokenType
 	TK_ASSIGN,			// =
 	TK_AND,				// &&
 	TK_OR,				// ||
+	TK_BIT_OR,
+	TK_BIT_AND,
+	TK_BIT_SL,
+	TK_BIT_SR,
 	TK_COMMA,			// ,
 	TK_BR_OPEN,			// (
 	TK_BR_CLOSE,		// )
@@ -56,9 +60,9 @@ enum TokenType
 };
 
 // the first key literal.
-#define TK__FIRST TK_TRUE
+#define TK__FIRST TK_BREAK
 // the last key literal.
-#define TK__LAST TK_END
+#define TK__LAST TK_WHILE
 
 // token struct
 typedef struct
