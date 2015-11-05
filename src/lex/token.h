@@ -16,37 +16,34 @@ enum TokenType
 	TK_COMMENT,			// a comment
 
 	// key literals
-	TK_TRUE,			// true
-	TK_FALSE,			// false
-	TK_LOG_AND,			// and
-	TK_LOG_OR,			// or
-	TK_LABEL,			// lbl
-	TK_GOTO,			// goto
-	TK_RETURN,			// return
-	TK_IF,				// if
+	TK_BREAK,			// break
+	TK_CONTINUE,		// continue
 	TK_ELSE,			// else
 	TK_ELSEIF,			// elseif
-	TK_FOR,				// for
-	TK_WHILE,			// while
-	TK_REPEAT,			// repeat
 	TK_END,				// end
+	TK_FALSE,			// false
+	TK_FOR,				// for
+	TK_FUNCTON,			// function
+	TK_IF,				// if
+	TK_RETURN,			// return
+	TK_TRUE,			// true
+	TK_VAR,				// var
+	TK_WHILE,			// while
 
 	// key tokens
 	TK_PLUS,			// +
 	TK_MINUS,			// -
-	TK_STAR,			// *
-	TK_SLASH,			// /
+	TK_MULTIPLY,		// *
+	TK_DIVIDE,			// /
 	TK_LESS,			// <
 	TK_GREATER,			// >
 	TK_LESSEQUALS,		// <=
 	TK_GREATEREQUALS,	// >=
-	TK_EQUALS,			// =
-	TK_NOTEQUALS,		// !=
-	TK_ARROW,			// ->
-	TK_BIT_AND,			// &
-	TK_BIT_OR,			// |
-	TK_BIT_XOR,			// ^^
-	TK_HAT,				// ^
+	TK_EQUALS,			// ==
+	TK_UNEQUALS,		// !=
+	TK_ASSIGN,			// =
+	TK_AND,				// &&
+	TK_OR,				// ||
 	TK_COMMA,			// ,
 	TK_BR_OPEN,			// (
 	TK_BR_CLOSE,		// )

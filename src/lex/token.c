@@ -6,20 +6,19 @@ const char* token_keywords[] =
 {
 	"<eoi>", 	"<nl>",
 
-	"<name>", 	"<int>", 	"<string>", "<ws>",
+	"<name>", 	"<int>", 	"<string>",	"<ws>",
 	"<comment>",
 
-	"true",		"false",	"and",		"or",
-	"lbl",		"goto",		"return",	"if",
-	"else",		"elseif",	"for",		"while",
-	"repeat",	"end",
+	"break",	"continue",	"else",		"elseif",
+	"end",		"false",	"for",		"function",
+	"if",		"return",	"true",		"var",
+	"while",
 
 	"+",		"-",		"*",		"/",
 	"<",		">",		"<=",		">=",
-	"=",		"!=",		"->",		"&",
-	"|",		"^^",		"^",		",",
-	"(",		")",		"{",		"}",
-	"[",		"]"
+	"==",		"!=",		"=",		"&&",
+	"||",		",",		"(",		")",
+	"{",		"}",		"[",		"]"
 };
 
 // eoi character
