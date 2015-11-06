@@ -3,9 +3,17 @@
 #include "lex.h"
 #include "../error/error.h"
 
+const char* lex_keywords[] =
+{
+	"break",	"continue",	"block",	"else",
+	"elseif",	"end",		"false",	"for",
+	"function",	"if",		"return",	"true",
+	"var",		"while"
+};
+
 // the alphabet of characters allowed in a name
 #define ALPHABET "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_"
-#define isLetter(str) ((str)[0] != 0 && strchr(ALPHABET, (str)[0]) != NULL)
+#define isLetter(chr) (chr != 0 && strchr(ALPHABET, chr) != NULL)
 
 // initialize a lexer
 void lex_init(LexState* ls, FILE* fp)
@@ -17,6 +25,8 @@ void lex_init(LexState* ls, FILE* fp)
 // try to read the next token
 int lex_next(LexState* ls)
 {
+	if (feof(ls->src))
+		return TK_EOI;
 	char c = fgetc(ls->src), c0;
 	printf("%c ", c);
 	switch(c)
@@ -93,8 +103,29 @@ int lex_next(LexState* ls)
 	case '5': case '6': case '7': case '8': case '9':
 		return TK_NONE;
 	default:
-		char name[17];
-		break;
+		{
+			char name[17];
+			int i;
+			for (i=0; i<16; i++)
+			{
+				name[i] = c;
+				c = fgetc(ls->src);
+				if (feof(ls->src))
+					break;
+				if (!isLetter(c))
+				{
+					ungetc(c, ls->src);
+					break;
+				}
+			}
+			name[i+1] = 0;
+			int j;
+			for (j=TOK_FIRST_KW; j<=TOK_LAST_KW; j++)
+				if (strlen(lex_keywords[j-TOK_FIRST_KW]) == i || strncmp(name, lex_keywords[j-TOK_FIRST_KW], i))
+					return j;
+
+			break;
+		}
 	}
 
 	return TK_NONE;

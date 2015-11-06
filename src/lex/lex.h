@@ -58,6 +58,11 @@ enum Keywords
 	TK_NONE = -1
 };
 
+// the first string kw
+#define TOK_FIRST_KW TK_BREAK
+// the last string kw
+#define TOK_LAST_KW	TK_WHILE
+
 typedef struct
 {
 	FILE* src;	// the source file
