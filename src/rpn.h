@@ -8,6 +8,6 @@
 #ifndef RPN_H_
 #define RPN_H_
 
-
+char* toRpn(char *str);
 
 #endif /* RPN_H_ */

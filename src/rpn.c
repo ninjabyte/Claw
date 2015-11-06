@@ -5,7 +5,8 @@
  *      Author: Benedikt
  */
 
-char* toRpn(char *str) {
+char* toRpn(char *str)
+{
 	char outputQueue[strlen(str)];
 	int outputQueuePtr = 0;
 	char numBuffer[6];
@@ -13,10 +14,10 @@ char* toRpn(char *str) {
 	int16_t number = 0;
 
 	for( ; str[outputQueuePtr]; outputQueuePtr++) {
-		if((str[outputQueuePtr] >= '0' && str[outputQueuePtr] <= '9') || str[outputQueuePtr] == '.') {
-			numBuffer[numBufferPtr++] = str[outputQueuePtr];
+		if((str[outputQueuePtr] >= '0' && str[outputQueuePtr] <= '9') || str[outputQueuePtr] == '-') {
+			numBuffer[numBufferPtr++] = str[outputQueuePtr]; // add to number buffer
 		} else {
-			number = atoi(numBufferPtr);
+			number = atoi(numBufferPtr); // convert number to an integer
 			while(numBufferPtr > 0)
 				numBuffer[numBufferPtr--] = 0;
 		}
