@@ -1,6 +1,11 @@
 #include <stdio.h>
+#include <string.h>
 #include "lex.h"
 #include "../error/error.h"
+
+// the alphabet of characters allowed in a name
+#define ALPHABET "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_"
+#define isLetter(str) ((str)[0] != 0 && strchr(ALPHABET, (str)[0]) != NULL)
 
 // initialize a lexer
 void lex_init(LexState* ls, FILE* fp)
@@ -84,7 +89,11 @@ int lex_next(LexState* ls)
 	case '}': return TK_CBR_CLOSE;
 	case '[': return TK_BBR_OPEN;
 	case ']': return TK_BBR_CLOSE;
+	case '0': case '1': case '2': case '3': case '4':
+	case '5': case '6': case '7': case '8': case '9':
+		return TK_NONE;
 	default:
+		char name[17];
 		break;
 	}
 

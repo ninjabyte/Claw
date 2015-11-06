@@ -10,9 +10,9 @@ enum Keywords
 	TK_WHITESPACE,		// whitespace
 
 	// keywords
-	TK_BLOCK,			// block
 	TK_BREAK,			// break
 	TK_CONTINUE,		// continue
+	TK_BLOCK,			// block
 	TK_ELSE,			// else
 	TK_ELSEIF,			// elseif
 	TK_END,				// end
@@ -54,7 +54,6 @@ enum Keywords
 	TK_BBR_OPEN,		// [
 	TK_BBR_CLOSE,		// ]
 	TK_COMMENT,			// --
-
 	NUM_KEYWORDS,
 	TK_NONE = -1
 };
