@@ -9,23 +9,24 @@
 
 int toRpn(char inputQueue[], char outputQueue[])
 {
-	int outputQueuePtr = 0;
+	int inputQueuePtr = 0;
+	//int outputQueuePtr = 0;
 	char numBuffer[6];
 	int numBufferPtr = 0;
 	volatile int16_t number = 0;
 
-	for( ; inputQueue[outputQueuePtr]; outputQueuePtr++) {
-		if((inputQueue[outputQueuePtr] >= '0' && inputQueue[outputQueuePtr] <= '9') || inputQueue[outputQueuePtr] == '-') {
-			numBuffer[numBufferPtr++] = inputQueue[outputQueuePtr]; // add to number buffer
+	for( ; inputQueue[inputQueuePtr]; inputQueuePtr++) {
+		if((inputQueue[inputQueuePtr] >= '0' && inputQueue[inputQueuePtr] <= '9') || inputQueue[inputQueuePtr] == '-') {
+			numBuffer[numBufferPtr++] = inputQueue[inputQueuePtr]; // add to number buffer
 		} else {
-			number = atoi(numBuffer); // convert number to an integer
+
 			while(numBufferPtr > 0)
 				numBuffer[numBufferPtr--] = 0;
 		}
 
 		if(0) { // function token
 
-		} else if(inputQueue[outputQueuePtr] == ',') { // argument seperator
+		} else if(inputQueue[inputQueuePtr] == ',') { // argument seperator
 
 		} else if(0) {
 
@@ -33,4 +34,26 @@ int toRpn(char inputQueue[], char outputQueue[])
 	}
 
 	return 1;
+}
+
+
+int16_t conv_number(char inputQueue[])
+{
+	int inputQueuePtr = 0;
+	char numBuffer[6];
+	int numBufferPtr = 0;
+	volatile int16_t number = 0;
+
+	for( ; inputQueue[inputQueuePtr]; inputQueuePtr++) {
+		if((inputQueue[inputQueuePtr] >= '0' && inputQueue[inputQueuePtr] <= '9') || inputQueue[inputQueuePtr] == '-') {
+			numBuffer[numBufferPtr++] = inputQueue[inputQueuePtr]; // add to number buffer
+		}
+		if(!inputQueue[inputQueuePtr + 1]) {
+			number = atoi(numBuffer); // convert number to an integer
+			while(numBufferPtr > 0)
+				numBuffer[numBufferPtr--] = 0;
+		}
+	}
+
+	return number;
 }
