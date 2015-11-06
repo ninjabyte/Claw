@@ -10,15 +10,15 @@
 #include "io.h"
 #include "lex/lex.h"
 #include "error/error.h"
-#include "stdlib.h"
+#include "string.h"
 
 #include "rpn.h"
 
 int main(int argc, char *argv[])
 {
-	char *str = "-192x";
-	volatile char *outputQueue[strlen(str)];
-	toRpn(str, outputQueue);
+	char str[] = "-192x";
+	char outputQueue[strlen(str)];
+	volatile int lol = toRpn(str, outputQueue);
 
 	if(argc < 2) {
 		error("No file specified!");

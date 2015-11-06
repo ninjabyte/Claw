@@ -11,6 +11,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-int toRpn(char *inputQueue, char *outputQueue);
+int toRpn(char inputQueue[], char outputQueue[]);
 
 #endif /* RPN_H_ */

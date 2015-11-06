@@ -7,10 +7,10 @@
 
 #include "rpn.h"
 
-int toRpn(char *inputQueue, char *outputQueue)
+int toRpn(char inputQueue[], char outputQueue[])
 {
 	int outputQueuePtr = 0;
-	char *numBuffer[6];
+	char numBuffer[6];
 	int numBufferPtr = 0;
 	volatile int16_t number = 0;
 
@@ -18,7 +18,7 @@ int toRpn(char *inputQueue, char *outputQueue)
 		if((inputQueue[outputQueuePtr] >= '0' && inputQueue[outputQueuePtr] <= '9') || inputQueue[outputQueuePtr] == '-') {
 			numBuffer[numBufferPtr++] = inputQueue[outputQueuePtr]; // add to number buffer
 		} else {
-			number = atoi(numBufferPtr); // convert number to an integer
+			number = atoi(numBuffer); // convert number to an integer
 			while(numBufferPtr > 0)
 				numBuffer[numBufferPtr--] = 0;
 		}
