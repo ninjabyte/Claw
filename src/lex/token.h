@@ -16,6 +16,7 @@ enum TokenType
 	TK_COMMENT,			// a comment
 
 	// key literals
+	TK_BLOCK,			// block
 	TK_BREAK,			// break
 	TK_CONTINUE,		// continue
 	TK_ELSE,			// else
