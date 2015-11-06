@@ -22,6 +22,8 @@ int lex_next(LexState* ls)
 	case '\r':
 		ls->line++;
 		return TK_NEWLINE;
+	case ' ': case '\f': case '\t': case '\v':// whitespace
+		return TK_WHITESPACE;
 	case '+': return TK_PLUS;
 	case '-':	// TK_MINUS or TK_COMMENT
 		c0 = fgetc(ls->src);

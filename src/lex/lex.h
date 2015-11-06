@@ -7,6 +7,7 @@ enum Keywords
 {
 	TK_EOI,				// end of input
 	TK_NEWLINE,			// new line
+	TK_WHITESPACE,		// whitespace
 
 	// keywords
 	TK_BLOCK,			// block
