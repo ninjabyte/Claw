@@ -6,7 +6,7 @@
  */
 
 #include "rpn.h"
-
+/*
 int toRpn(char inputQueue[], char outputQueue[])
 {
 	int inputQueuePtr = 0;
@@ -29,7 +29,7 @@ int toRpn(char inputQueue[], char outputQueue[])
 	return 1;
 }
 
-
+*/
 int16_t conv_number(char inputQueue[])
 {
 	int inputQueuePtr = 0;

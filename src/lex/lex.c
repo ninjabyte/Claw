@@ -8,7 +8,7 @@ const char* lex_keywords[] =
 	"break",	"continue",	"block",	"else",
 	"elseif",	"end",		"false",	"for",
 	"function",	"if",		"return",	"true",
-	"var", "var[", "while"
+	"var", "while"
 };
 
 // the alphabet of characters allowed in a name
@@ -23,8 +23,8 @@ void lex_init(LexState* ls, FILE* fp)
 }
 
 // try to read the next token
-// if its a name, put it into ni
-int lex_next(LexState* ls, lex_NameInfo* ni)
+// if its a name, put it into nf
+int lex_next(LexState* ls, void* nf)
 {
 	int c = fgetc(ls->src), c0;
 	switch(c)
@@ -124,7 +124,7 @@ int lex_next(LexState* ls, lex_NameInfo* ni)
 				if (strlen(lex_keywords[j-TOK_FIRST_KW]) == i && strncmp(name, lex_keywords[j-TOK_FIRST_KW], i) == 0)
 					return j;
 
-			memcpy(ni->name, name, i+1);
+			memcpy(((lex_NameInfo)nf)->name, name, i+1);
 			return TK_NAME;
 		}
 	}

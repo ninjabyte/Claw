@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-enum Keywords
+enum Keyword
 {
 	TK_EOI,				// end of input
 	TK_NEWLINE,			// new line
