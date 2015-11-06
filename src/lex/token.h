@@ -85,4 +85,37 @@ void token_nextComment(const char* str, Token* tok);
 
 void token_next(const char* src, Token* tok);
 
+// eoi character
+#define EOI ((char) 0)
+// newline character
+#define NEWLINE '\n'
+// double quote character
+#define DOUBLE_QUOTE '"'
+// dot character
+#define DOT '.'
+
+// allowed characters
+#define ALPHABET "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_"
+// allowed numbers
+#define NUMBERS "0123456789"
+// whitespace characters
+#define WHITESPACE " \t\r"
+
+// initialize a token _tok with values _tok.seq = _seq, _tok.seqlen = _len and _tok.keyword = _kw
+#define setTok(_tok, _seq, _len, _kw) {(_tok)->seq = _seq; (_tok)->seqlen = _len; (_tok)->token = _kw;}
+// check if the string starts with an end of input character
+#define isEOI(str) ((str)[0] == EOI)
+// check if the string starts with a newline character
+#define isNewLine(str) ((str)[0] == NEWLINE)
+// check if the string starts with a double quote
+#define isDoubleQuote(str) ((str)[0] == DOUBLE_QUOTE)
+// check if the string starts with a dot
+#define isDot(str) ((str)[0] == DOT)
+// check if the string starts with a letter character
+#define isLetter(str) ((str)[0] != 0 && strchr(ALPHABET, (str)[0]) != NULL)
+// check if the string starts with a numer character
+#define isNumber(str) ((str)[0] != 0 && strchr(NUMBERS, (str)[0]) != NULL)
+// check if the string starts with a whitespace
+#define isWhitespace(str) ((str)[0] != 0 && strchr(WHITESPACE, (str)[0]) != NULL)
+
 #endif /* TOKEN_H_ */
