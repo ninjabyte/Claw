@@ -58,7 +58,6 @@ enum Keyword
 	TK_COMMENT,			// --
 	TK_NUMBER,			// 0-9
 	TK_QUOTE,			// "
-	TK_SEMICOLON,		// ;
 	NUM_KEYWORDS,
 	TK_NONE = -1
 };
