@@ -10,13 +10,20 @@
 #include "io.h"
 #include "lex/lex.h"
 #include "error/error.h"
+#include "stdlib.h"
+
+#include "rpn.h"
 
 int main(int argc, char *argv[])
 {
-  if(argc < 2) {
-    error("No file specified!");
-    return -1;
-  }
-  error_printmsg(lex_test(argv[1]));
-  return EXIT_SUCCESS;
+	char *str = "-192x";
+	volatile char *outputQueue[strlen(str)];
+	toRpn(str, outputQueue);
+
+	if(argc < 2) {
+		error("No file specified!");
+		return -1;
+	}
+	error_printmsg(lex_test(argv[1]));
+	return EXIT_SUCCESS;
 }

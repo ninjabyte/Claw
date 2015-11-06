@@ -8,6 +8,9 @@
 #ifndef RPN_H_
 #define RPN_H_
 
-char* toRpn(char *str);
+#include <stdint.h>
+#include <stdlib.h>
+
+int toRpn(char *inputQueue, char *outputQueue);
 
 #endif /* RPN_H_ */
