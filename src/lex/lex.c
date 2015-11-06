@@ -8,7 +8,7 @@ const char* lex_keywords[] =
 	"break",	"continue",	"block",	"else",
 	"elseif",	"end",		"false",	"for",
 	"function",	"if",		"return",	"true",
-	"var", "var[", "svar", "svar[", "while"
+	"var", "var[", "while"
 };
 
 // the alphabet of characters allowed in a name
