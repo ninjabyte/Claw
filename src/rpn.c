@@ -10,19 +10,12 @@
 int toRpn(char inputQueue[], char outputQueue[])
 {
 	int inputQueuePtr = 0;
-	//int outputQueuePtr = 0;
-	char numBuffer[6];
-	int numBufferPtr = 0;
+	int outputQueuePtr = 0
 	volatile int16_t number = 0;
 
 	for( ; inputQueue[inputQueuePtr]; inputQueuePtr++) {
-		if((inputQueue[inputQueuePtr] >= '0' && inputQueue[inputQueuePtr] <= '9') || inputQueue[inputQueuePtr] == '-') {
-			numBuffer[numBufferPtr++] = inputQueue[inputQueuePtr]; // add to number buffer
-		} else {
-
-			while(numBufferPtr > 0)
-				numBuffer[numBufferPtr--] = 0;
-		}
+		if((inputQueue[inputQueuePtr] >= '0' && inputQueue[inputQueuePtr] <= '9') || inputQueue[inputQueuePtr] == '-')
+			outputQueue[outputQueuePtr++] = inputQueue[inputQueuePtr]; // add number to output buffer
 
 		if(0) { // function token
 
