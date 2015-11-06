@@ -9,6 +9,8 @@ enum Keywords
 	TK_NEWLINE,			// new line
 	TK_WHITESPACE,		// whitespace
 
+	TK_NAME,			// a name. Maximum length of 16 characters
+
 	// keywords
 	TK_BREAK,			// break
 	TK_CONTINUE,		// continue
@@ -54,6 +56,8 @@ enum Keywords
 	TK_BBR_OPEN,		// [
 	TK_BBR_CLOSE,		// ]
 	TK_COMMENT,			// --
+	TK_NUMBER,			// 0-9
+	TK_QUOTE,			// "
 	NUM_KEYWORDS,
 	TK_NONE = -1
 };
@@ -63,14 +67,21 @@ enum Keywords
 // the last string kw
 #define TOK_LAST_KW	TK_WHILE
 
+// lexer state
 typedef struct
 {
 	FILE* src;	// the source file
 	int line;	// the current line number
 } LexState;
 
+// to store additional info about the name
+typedef struct
+{
+	char name[17];
+} lex_NameInfo;
+
 void lex_init(LexState* ls, FILE* fp);
-int lex_next(LexState* ls);
+int lex_next(LexState* ls, lex_NameInfo* ni);
 int lex_test(char* file);
 
 #endif /* LEX_H_ */

@@ -23,15 +23,14 @@ void lex_init(LexState* ls, FILE* fp)
 }
 
 // try to read the next token
-int lex_next(LexState* ls)
+// if its a name, put it into ni
+int lex_next(LexState* ls, lex_NameInfo* ni)
 {
-	if (feof(ls->src))
-		return TK_EOI;
-	char c = fgetc(ls->src), c0;
-	printf("%c ", c);
+	int c = fgetc(ls->src), c0;
 	switch(c)
 	{
 	case 0:
+	case EOF:
 		return TK_EOI;
 	case '\n':	// line breaks
 	case '\r':
@@ -101,16 +100,17 @@ int lex_next(LexState* ls)
 	case ']': return TK_BBR_CLOSE;
 	case '0': case '1': case '2': case '3': case '4':
 	case '5': case '6': case '7': case '8': case '9':
-		return TK_NONE;
+		return TK_NUMBER;
+	case '"': return TK_QUOTE;
 	default:
 		{
 			char name[17];
 			int i;
 			for (i=0; i<16; i++)
 			{
-				name[i] = c;
+				name[i] = (char) c;
 				c = fgetc(ls->src);
-				if (feof(ls->src))
+				if (c == EOF)
 					break;
 				if (!isLetter(c))
 				{
@@ -118,13 +118,14 @@ int lex_next(LexState* ls)
 					break;
 				}
 			}
-			name[i+1] = 0;
+			name[++i] = 0;
 			int j;
 			for (j=TOK_FIRST_KW; j<=TOK_LAST_KW; j++)
-				if (strlen(lex_keywords[j-TOK_FIRST_KW]) == i || strncmp(name, lex_keywords[j-TOK_FIRST_KW], i))
+				if (strlen(lex_keywords[j-TOK_FIRST_KW]) == i && strncmp(name, lex_keywords[j-TOK_FIRST_KW], i) == 0)
 					return j;
 
-			break;
+			memcpy(ni->name, name, i+1);
+			return TK_NAME;
 		}
 	}
 
@@ -142,8 +143,16 @@ int lex_test(char* file)
 	LexState ls;
 	lex_init(&ls, fp);
 
+	lex_NameInfo ni;
+
 	while (!feof(fp))
-		printf("%i\n", lex_next(&ls));
+	{
+		int tok = lex_next(&ls, &ni);
+		printf("%i", tok);
+		if (tok == TK_NAME)
+			printf(" %s", ni.name);
+		printf("\n");
+	}
 
 	fclose(fp);
 	return ERR_NO_ERROR;
