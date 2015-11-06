@@ -5,8 +5,11 @@
  *      Author: Benedikt
  */
 
+#include <stdlib.h>
 #include "parser.h"
 #include "io.h"
+#include "lex/lex.h"
+#include "error/error.h"
 
 int main(int argc, char *argv[])
 {
@@ -14,5 +17,6 @@ int main(int argc, char *argv[])
     error("No file specified!");
     return -1;
   }
-  return parse(argv[1]);
+  error_printmsg(lex_test(argv[1]));
+  return EXIT_SUCCESS;
 }

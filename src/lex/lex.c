@@ -1,56 +1,108 @@
 #include <stdio.h>
-#include <string.h>
 #include "lex.h"
 #include "../error/error.h"
-#include "token.h"
 
-// get pointer to current location in source
-#define getSrc(ls) ((char*) ((ls)->src + (ls)->current))
-
-// initializes a lex state
-void lex_init(LexState* ls, const char* src, size_t size)
+// initialize a lexer
+void lex_init(LexState* ls, FILE* fp)
 {
-	ls->src = src;
-	ls->size = size;
-	ls->current = 0;
 	ls->line = 0;
-	ls->error = ERR_NO_ERROR;
-	ls->tok.token = TK_NONE;
-	ls->tok.seq = src;
-	ls->tok.seqlen = 0;
+	ls->src = fp;
 }
 
-// print the error of a lex state
-void lex_printerr(LexState *ls)
+// try to read the next token
+int lex_next(LexState* ls)
 {
-	error_printmsg(ls->error);
-	if (ls->error)
-		printf("at line: %i", ls->line);
-}
-
-int lex_isFinished(LexState* ls)
-{
-	return ls->current >= ls->size;
-}
-
-// tries to read the next token and add it to the queue. Will set ls.error if an error occured.
-void lex_nextToken(LexState* ls)
-{
-	while (ls->tok.token == TK_NONE)
+	char c = fgetc(ls->src), c0;
+	printf("%c ", c);
+	switch(c)
 	{
-		token_next(getSrc(ls), &ls->tok);
-		if (ls->tok.token == TK_NONE)
+	case 0:
+		return TK_EOI;
+	case '\n':	// line breaks
+	case '\r':
+		ls->line++;
+		return TK_NEWLINE;
+	case '+': return TK_PLUS;
+	case '-':	// TK_MINUS or TK_COMMENT
+		c0 = fgetc(ls->src);
+		if (c0 == '-')
+			return TK_COMMENT;
+		ungetc(c0, ls->src);
+		return TK_MINUS;
+	case '*': return TK_MULTIPLY;
+	case '/': return TK_DIVIDE;
+	case '%': return TK_MODULUS;
+	case '<':	// TK_LESS, TK_LESSEQUALS or TK_BIT_SL
+		c0 = fgetc(ls->src);
+		switch(c0)
 		{
-			ls->error = ERR_UNEXPECTED_INPUT;
-			break;
-		}else if(ls->tok.token == TK_NEWLINE)
+		case '<': return TK_BIT_SL;
+		case '=': return TK_LESSEQUALS;
+		}
+		ungetc(c0, ls->src);
+		return TK_LESS;
+	case '>':	// TK_GREATER, TK_GREATEREQUALS or TK_BIT_SR
+		c0 = fgetc(ls->src);
+		switch(c0)
 		{
-			ls->line++;
-			ls->tok.token = TK_NONE;
-		}else if(ls->tok.token == TK_COMMENT || ls->tok.token == TK_WHITESPACE)
-			ls->tok.token = TK_NONE;
-		ls->current += ls->tok.seqlen;
-		if (lex_isFinished(ls))
-			break;
+		case '>': return TK_BIT_SR;
+		case '=': return TK_GREATEREQUALS;
+		}
+		ungetc(c0, ls->src);
+		return TK_GREATER;
+	case '=':	// TK_ASSIGN or TK_EQUALS
+		c0 = fgetc(ls->src);
+		if (c0 == '=')
+			return TK_EQUALS;
+		ungetc(c0, ls->src);
+		return TK_ASSIGN;
+	case '!':	// TK_BIT_NOT or TK_UNEQUALS
+		c0 = fgetc(ls->src);
+		if (c0 == '=')
+			return TK_UNEQUALS;
+		ungetc(c0, ls->src);
+		return TK_BIT_NOT;
+	case '&':	// TK_AND or TK_BIT_AND
+		c0 = fgetc(ls->src);
+		if (c0 == '&')
+			return TK_AND;
+		ungetc(c0, ls->src);
+		return TK_BIT_AND;
+	case '|':	// TK_OR or TK_BIT_OR
+		c0 = fgetc(ls->src);
+		if (c0 == '|')
+			return TK_OR;
+		ungetc(c0, ls->src);
+		return TK_BIT_OR;
+	case '^': return TK_BIT_XOR;
+	case ',': return TK_COMMA;
+	case '(': return TK_BR_OPEN;
+	case ')': return TK_BR_CLOSE;
+	case '{': return TK_CBR_OPEN;
+	case '}': return TK_CBR_CLOSE;
+	case '[': return TK_BBR_OPEN;
+	case ']': return TK_BBR_CLOSE;
+	default:
+		break;
 	}
+
+	return TK_NONE;
+}
+
+// test the lexer
+int lex_test(char* file)
+{
+	FILE* fp = fopen(file, "r");
+
+	if(!fp)
+	    return ERR_INVALID_FILE;
+
+	LexState ls;
+	lex_init(&ls, fp);
+
+	while (!feof(fp))
+		printf("%i\n", lex_next(&ls));
+
+	fclose(fp);
+	return ERR_NO_ERROR;
 }

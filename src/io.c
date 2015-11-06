@@ -9,6 +9,6 @@
 
 #include "io.h"
 
-void error(char *msg) {
+void error(const char *msg) {
   fprintf(stderr, "%s\n", msg);
 }

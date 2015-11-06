@@ -1,10 +1,11 @@
-#include <stdio.h>
 #include "error.h"
+#include "../io.h"
 
 // error messages
 const char* error_messages[] =
 {
 	"No error occured",
+	"Invalid file"
 	"Unexpected input",
 	"Unexpected end of input",
 	"Unexpected token",
@@ -12,10 +13,8 @@ const char* error_messages[] =
 };
 
 // prints the error message of an error code
-void error_printmsg(unsigned int code)
+void error_printmsg(int code)
 {
-	if (code == ERR_NO_ERROR)
-		printf("%s\n", error_messages[code]);
-	else if (code < NUM_ERRORS && code > ERR_NO_ERROR)
-		printf("Error: %s (Error code %i)\n", error_messages[code], code);
+	if (code < NUM_ERRORS && code >= ERR_NO_ERROR)
+		error(error_messages[code]);
 }
