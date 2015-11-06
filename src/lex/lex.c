@@ -36,6 +36,8 @@ int lex_next(LexState* ls, void* nf)
 	case '\r':
 		ls->line++;
 		return TK_NEWLINE;
+	case ';':
+		return TK_SEMICOLON;
 	case ' ': case '\f': case '\t': case '\v':// whitespace
 		return TK_WHITESPACE;
 	case '+': return TK_PLUS;
