@@ -120,6 +120,7 @@ int lex_nextLong(LexState* ls, char c0, int defaultTok)
 	}
 }
 
+// try to match a number
 int lex_nextNumber(LexState* ls, char c)
 {
 	uint16_t number;
@@ -131,13 +132,11 @@ int lex_nextNumber(LexState* ls, char c)
 		{
 			number *= 10;
 			number += c - '0';
+			c = fgetc(ls->src);
 		} else {
 			ungetc(c, ls->src);
 			break;
 		}
-
-		if(i+1 < 7)
-			c = fgetc(ls->src);
 	}
 
 	ls->kf.number = number;
