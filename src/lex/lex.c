@@ -27,48 +27,6 @@ void lex_init(LexState* ls, FILE* fp)
 	ls->last_token = TK_NONE;
 }
 
-// try to match a token of 2 chars
-int lex_nextLong(LexState* ls, char c0, int defaultTok)
-{
-	int c1 = fgetc(ls->src);
-
-	switch(hash(c0, (char) c1))
-	{
-		case hash('>', '>'): return TK_BIT_SR;
-		case hash('>', '='): return TK_GREATEREQUALS;
-		case hash('<', '<'): return TK_BIT_SL;
-		case hash('<', '='): return TK_LESSEQUALS;
-		case hash('=', '='): return TK_EQUALS;
-		case hash('!', '='): return TK_UNEQUALS;
-		case hash('|', '|'): return TK_OR;
-		case hash('&', '&'): return TK_AND;
-		case hash('-', '-'): return TK_COMMENT;
-		default:
-			ungetc(c1, ls->src);
-			return defaultTok;
-	}
-}
-/*
-int lex_nextNumber(LexState* ls, char c)
-{
-	if(c >= '0' && c <= '9')
-	{
-		if(digit_ptr < 7)
-		{
-			digits[digit_ptr++] = c;
-			last_chr = c;
-			continue;
-		} else
-			return TK_NONE; // ERROR - OVERFLOW!!!
-		} else
-		{
-			ungetc(c, ls->src);
-			kf->number = atoi(digits);
-			return TK_NUMBER;
-		}
-	}
-}*/
-
 // try to read the next token
 // if its a name, put it into kf
 int lex_next(LexState* ls)
@@ -87,7 +45,7 @@ int lex_next(LexState* ls)
 		case ' ': case '\f': case '\t': case '\v': case ';': // whitespace
 			return TK_WHITESPACE;
 		case '+': return TK_PLUS;
-		case '-': return lex_nextLong(ls, c, TK_MINUS);// TK_MINUS or TK_COMMENT
+		case '-': return lex_nextLong(ls, c, TK_MINUS);	// TK_MINUS or TK_COMMENT
 		case '*': return TK_MULTIPLY;
 		case '/': return TK_DIVIDE;
 		case '%': return TK_MODULUS;
@@ -159,6 +117,28 @@ int lex_nextLong(LexState* ls, char c0, int defaultTok)
 			return defaultTok;
 	}
 }
+
+/*
+int lex_nextNumber(LexState* ls, char c)
+{
+	if(c >= '0' && c <= '9')
+	{
+		if(digit_ptr < 7)
+		{
+			digits[digit_ptr++] = c;
+			last_chr = c;
+			continue;
+		} else
+			return TK_NONE; // ERROR - OVERFLOW!!!
+		} else
+		{
+			ungetc(c, ls->src);
+			kf->number = atoi(digits);
+			return TK_NUMBER;
+		}
+	}
+}*/
+
 
 /*
 int lex_require_multiple_chars(LexState* ls, KeywordInfo *kf, char chr)
