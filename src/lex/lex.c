@@ -155,7 +155,9 @@ int lex_nextNumber2(LexState* ls, char c)
 		{
 			number *= 10;
 			number += c - '0';
+			continue;
 		}
+		break;
 	}
 	return TK_NONE;
 }
