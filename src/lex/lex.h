@@ -85,11 +85,8 @@ typedef struct
 } LexState;
 
 void lex_init(LexState* ls, FILE* fp);
-<<<<<<< HEAD
 int lex_nextLong(LexState* ls, char c0, int defaultTok);
 int lex_nextNumber(LexState* ls, char c0);
-=======
->>>>>>> origin/master
 int lex_next(LexState* ls);
 
 #endif /* LEX_H_ */

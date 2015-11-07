@@ -27,7 +27,6 @@ void lex_init(LexState* ls, FILE* fp)
 	ls->last_token = TK_NONE;
 }
 
-<<<<<<< HEAD
 // try to match a token of 2 chars
 int lex_nextLong(LexState* ls, char c0, int defaultTok)
 {
@@ -70,8 +69,6 @@ int lex_nextNumber(LexState* ls, char c)
 	}
 }*/
 
-=======
->>>>>>> origin/master
 // try to read the next token
 // if its a name, put it into kf
 int lex_next(LexState* ls)
