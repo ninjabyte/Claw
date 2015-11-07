@@ -17,6 +17,8 @@ const char* lex_keywords[] =
 #define isLetter(chr) ((chr) != 0 && strchr(ALPHABET, chr) != NULL)
 #define hash(c0, c1) ((c0) << 8 | (c1))
 
+int lex_nextLong(LexState* ls, char c0, int defaultTok);
+
 // initialize a lexer
 void lex_init(LexState* ls, FILE* fp)
 {
@@ -25,6 +27,7 @@ void lex_init(LexState* ls, FILE* fp)
 	ls->last_token = TK_NONE;
 }
 
+<<<<<<< HEAD
 // try to match a token of 2 chars
 int lex_nextLong(LexState* ls, char c0, int defaultTok)
 {
@@ -67,6 +70,8 @@ int lex_nextNumber(LexState* ls, char c)
 	}
 }*/
 
+=======
+>>>>>>> origin/master
 // try to read the next token
 // if its a name, put it into kf
 int lex_next(LexState* ls)
@@ -134,6 +139,28 @@ int lex_next(LexState* ls)
 		}
 	}
 	return TK_NONE;
+}
+
+// try to match a token of 2 chars
+int lex_nextLong(LexState* ls, char c0, int defaultTok)
+{
+	int c1 = fgetc(ls->src);
+
+	switch(hash(c0, (char) c1))
+	{
+		case hash('>', '>'): return TK_BIT_SR;
+		case hash('>', '='): return TK_GREATEREQUALS;
+		case hash('<', '<'): return TK_BIT_SL;
+		case hash('<', '='): return TK_LESSEQUALS;
+		case hash('=', '='): return TK_EQUALS;
+		case hash('!', '='): return TK_UNEQUALS;
+		case hash('|', '|'): return TK_OR;
+		case hash('&', '&'): return TK_AND;
+		case hash('-', '-'): return TK_COMMENT;
+		default:
+			ungetc(c1, ls->src);
+			return defaultTok;
+	}
 }
 
 /*
