@@ -18,6 +18,7 @@ const char* lex_keywords[] =
 #define hash(c0, c1) ((c0) << 8 | (c1))
 
 int lex_nextLong(LexState* ls, char c0, int defaultTok);
+int lex_nextNumber(LexState* ls, char c0);
 
 // initialize a lexer
 void lex_init(LexState* ls, FILE* fp)
@@ -65,7 +66,7 @@ int lex_next(LexState* ls)
 		case ']': return TK_BBR_CLOSE;
 		case '0': case '1': case '2': case '3': case '4':
 		case '5': case '6': case '7': case '8': case '9':
-			return TK_NUMBER;
+			return lex_nextNumber(ls, c);
 		case '"': return TK_QUOTE;
 		default:
 			{
@@ -118,65 +119,23 @@ int lex_nextLong(LexState* ls, char c0, int defaultTok)
 	}
 }
 
-/*
 int lex_nextNumber(LexState* ls, char c)
 {
-	if(c >= '0' && c <= '9')
-	{
-		if(digit_ptr < 7)
+	while(1) {
+		if(c >= '0' && c <= '9')
 		{
-			digits[digit_ptr++] = c;
-			last_chr = c;
-			continue;
-		} else
-			return TK_NONE; // ERROR - OVERFLOW!!!
-		} else
-		{
+			if(ls->kb->number_digit_ptr < 7)
+			{
+				ls->kb->number_digits[ls->kb->number_digit_ptr++] = c;
+			} else
+				return TK_NONE; // ERROR - OVERFLOW!!!
+		} else {
 			ungetc(c, ls->src);
-			kf->number = atoi(digits);
+			ls->kf->number = atoi(ls->kb->number_digits);
 			return TK_NUMBER;
 		}
+
+		c = fgetc(ls->src);
 	}
-}*/
-
-
-/*
-int lex_require_multiple_chars(LexState* ls, KeywordInfo *kf, char chr)
-{
-	char digits[7];
-	int digit_ptr = 0;
-	char last_chr = chr;
-
-	while(1) {
-		int c = fgetc(ls->src);
-
-		switch(last_chr) {
-			case '-':
-				if (c == '-')
-					return TK_COMMENT);
-				ungetc(c, ls->src);
-				return TK_MINUS);
-			case '<':
-				switch(c) {
-					case '<': return TK_BIT_SL);
-					case '=': return TK_LESSEQUALS);
-				}
-				ungetc(c, ls->src);
-					return TK_LESS);
-			case '0': case '1': case '2': case '3': case '4':
-			case '5': case '6': case '7': case '8': case '9':
-				if(c >= '0' && c <= '9') {
-					if(digit_ptr < 7) {
-						digits[digit_ptr++] = c;
-						last_chr = c;
-						continue;
-					} else
-						return TK_NONE; // ERROR - OVERFLOW!!!
-				} else {
-					ungetc(c, ls->src);
-					kf->number = atoi(digits);
-					return TK_NUMBER);
-				}
-		}
-	}
-}*/
+	return TK_NONE;
+}
