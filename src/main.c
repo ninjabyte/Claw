@@ -8,7 +8,6 @@
 #include <stdlib.h>
 #include "parser.h"
 #include "io.h"
-#include "lex/lex.h"
 #include "error/error.h"
 #include "string.h"
 
@@ -20,6 +19,6 @@ int main(int argc, char *argv[])
 		error("No file specified!");
 		return -1;
 	}
-	error_printmsg(lex_test(argv[1]));
+	error_printmsg(do_parse(argv[1]));
 	return EXIT_SUCCESS;
 }

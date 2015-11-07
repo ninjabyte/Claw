@@ -2,6 +2,7 @@
 #define LEX_H_
 
 #include <stdio.h>
+#include <stdint.h>
 
 enum Keyword
 {
@@ -72,12 +73,15 @@ typedef struct
 {
 	FILE* src;	// the source file
 	int line;	// the current line number
+	int last_token; // last parsed token
+	char last_chr; // last character
 } LexState;
 
 // to store additional info about the keyword
 typedef struct
 {
 	char name[17];
+	int16_t number;
 } KeywordInfo;
 
 void lex_init(LexState* ls, FILE* fp);

@@ -13,52 +13,33 @@
 #include <stdint.h>
 
 #include "parser.h"
+#include "lex/lex.h"
+#include "rpn.h"
+#include "cpl/cpl.h"
+#include "error/error.h"
 
-const char* keywords[13] = {
-		"break", "continue", "else", "elseif", "end", "false",
-		"for", "function", "if", "return", "true", "var", "while"};
-
-int parse(char *file)
+// test the lexer
+int do_parse(char* file)
 {
-  FILE *fp;
+	FILE* fp = fopen(file, "r");
 
-  fp = fopen(file, "r");
-  if(!fp) {
-    error("Invalid file!");
-    return -1;
-  }
+	if(!fp)
+	    return ERR_INVALID_FILE;
 
-  char line_buffer[LINE_LENGTH];
-  int line_ptr = 0;
+	LexState ls;
+	lex_init(&ls, fp);
 
-  while(1) {
-    int chr = fgetc(fp);
-    if(chr == EOF)
-      break;
-    if(chr == '\n' || chr == ';') {
-      parse_line(line_buffer); // new line; copy buffer
-      for(int i = 0; i < LINE_LENGTH; i++)
-        line_buffer[i] = 0;
-      line_ptr = 0;
-      continue;
-    }
+	KeywordInfo kf;
 
-    line_buffer[line_ptr++] = chr;
-    if(line_ptr >= LINE_LENGTH) {
-    	error("Line too long!");
-    	break;
-    }
-  }
+	while (!feof(fp))
+	{
+		int tok = lex_next(&ls, &kf);
+		printf("%i", tok);
+		if (tok == TK_NAME)
+			printf(" %s", kf.name);
+		printf("\n");
+	}
 
-  fclose(fp);
-  return 0;
-}
-
-int parse_line(char line[])
-{
-  for(int i = 0; line[i] && i < LINE_LENGTH; i++) {
-
-    printf("%c", line[i]);
-  }
-  return 0;
+	fclose(fp);
+	return ERR_NO_ERROR;
 }
