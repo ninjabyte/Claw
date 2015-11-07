@@ -29,11 +29,6 @@ void lex_init(LexState* ls, FILE* fp)
 int lex_nextLong(LexState* ls, char c0, int defaultTok)
 {
 	int c1 = fgetc(ls->src);
-	if (c1 == EOF)
-	{
-		ungetc(c1, ls->src);
-		return defaultTok;
-	}
 
 	switch(hash(c0, (char) c1))
 	{
