@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include "lex.h"
 #include "../error/error.h"
@@ -118,9 +119,13 @@ int lex_nextLong(LexState* ls, char c0, int defaultTok)
 	}
 }
 
-/*
+
 int lex_nextNumber(LexState* ls, char c)
 {
+	char digits[7];
+	int digit_ptr = 0;
+	char last_chr = c;
+
 	if(c >= '0' && c <= '9')
 	{
 		if(digit_ptr < 7)
@@ -128,17 +133,32 @@ int lex_nextNumber(LexState* ls, char c)
 			digits[digit_ptr++] = c;
 			last_chr = c;
 			continue;
-		} else
+		}else
 			return TK_NONE; // ERROR - OVERFLOW!!!
-		} else
+	}else
+	{
+		ungetc(c, ls->src);
+		ls->kf.number = atoi(digits);
+		return TK_NUMBER;
+	}
+	return TK_NONE;
+}
+
+// why not 2?
+int lex_nextNumber2(LexState* ls, char c)
+{
+	uint16_t number;
+	int i;
+	for (i=0; i<7; i++)
+	{
+		if (c >= '0' && c <= '9')
 		{
-			ungetc(c, ls->src);
-			kf->number = atoi(digits);
-			return TK_NUMBER;
+			number *= 10;
+			number += c - '0';
 		}
 	}
-}*/
-
+	return TK_NONE;
+}
 
 /*
 int lex_require_multiple_chars(LexState* ls, KeywordInfo *kf, char chr)
