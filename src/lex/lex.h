@@ -68,14 +68,6 @@ enum Keyword
 // the last string kw
 #define TOK_LAST_KW	TK_WHILE
 
-// lexer state
-typedef struct
-{
-	FILE* src;	// the source file
-	int line;	// the current line number
-	int last_token; // last parsed token
-} LexState;
-
 // to store additional info about the keyword
 typedef struct
 {
@@ -83,8 +75,18 @@ typedef struct
 	int16_t number;
 } KeywordInfo;
 
+// lexer state
+typedef struct
+{
+	FILE* src;	// the source file
+	int line;	// the current line number
+	int last_token; // last parsed token
+	KeywordInfo kf;
+} LexState;
+
 void lex_init(LexState* ls, FILE* fp);
-int lex_next(LexState* ls, KeywordInfo *kf);
+int lex_next(LexState* ls);
+int lex_require_multiple_chars(LexState* ls, KeywordInfo *kf, char chr);
 int lex_test(char* file);
 
 #endif /* LEX_H_ */

@@ -23,78 +23,82 @@ void lex_init(LexState* ls, FILE* fp)
 	ls->src = fp;
 }
 
-int lex_require_multiple_chars(LexState* ls, KeywordInfo *kf, char chr);
+// try to match a token of 2 chars
+int lex_nextLongToken(LexState* ls, char c0, char c1)
+{
+	return 0;
+}
 
 // try to read the next token
 // if its a name, put it into kf
-int lex_next(LexState* ls, KeywordInfo *kf)
+int lex_next(LexState* ls)
 {
 	int c = fgetc(ls->src), c1;
 
 	switch(c) {
 		case 0:
 		case EOF:
-			return(TK_EOI);
+			return TK_EOI;
 		case '\n':	// line breaks
 		case '\r':
 			ls->line++;
-			return(TK_NEWLINE);
+			return TK_NEWLINE;
 		case ' ': case '\f': case '\t': case '\v': case ';': // whitespace
-			return(TK_WHITESPACE);
-		case '+': return(TK_PLUS);
+			return TK_WHITESPACE;
+		case '+': return TK_PLUS;
 		case '-':	// TK_MINUS or TK_COMMENT
-			return lex_require_multiple_chars(ls, kf, c);
-		case '*': return(TK_MULTIPLY);
-		case '/': return(TK_DIVIDE);
-		case '%': return(TK_MODULUS);
+			return TK_NONE;
+		case '*': return TK_MULTIPLY;
+		case '/': return TK_DIVIDE;
+		case '%': return TK_MODULUS;
 		case '<':	// TK_LESS, TK_LESSEQUALS or TK_BIT_SL
-			return lex_require_multiple_chars(ls, kf, c);
+			return TK_NONE;
 		case '>':	// TK_GREATER, TK_GREATEREQUALS or TK_BIT_SR
 			c1 = fgetc(ls->src);
 			switch(c1)
 			{
-			case '>': return(TK_BIT_SR);
-			case '=': return(TK_GREATEREQUALS);
+			case '>': return TK_BIT_SR;
+			case '=': return TK_GREATEREQUALS;
 			}
 			ungetc(c1, ls->src);
-			return(TK_GREATER);
+			return TK_GREATER;
 		case '=':	// TK_ASSIGN or TK_EQUALS
 			c1 = fgetc(ls->src);
 			if (c1 == '=')
-				return(TK_EQUALS);
+				return TK_EQUALS;
 			ungetc(c1, ls->src);
-			return(TK_ASSIGN);
+			return TK_ASSIGN;
 		case '!':	// TK_BIT_NOT or TK_UNEQUALS
 			c1 = fgetc(ls->src);
 			if (c1 == '=')
-				return(TK_UNEQUALS);
+				return TK_UNEQUALS ;
 			ungetc(c1, ls->src);
-			return(TK_BIT_NOT);
+			return TK_BIT_NOT;
 		case '&':	// TK_AND or TK_BIT_AND
 			c1 = fgetc(ls->src);
 			if (c1 == '&')
-				return(TK_AND);
+				return TK_AND;
 			ungetc(c1, ls->src);
-			return(TK_BIT_AND);
+			return TK_BIT_AND;
 		case '|':	// TK_OR or TK_BIT_OR
 			c1 = fgetc(ls->src);
 			if (c1 == '|')
-				return(TK_OR);
+				return TK_OR;
 			ungetc(c1, ls->src);
-			return(TK_BIT_OR);
-		case '^': return(TK_BIT_XOR);
-		case ',': return(TK_COMMA);
-		case '(': return(TK_BR_OPEN);
-		case ')': return(TK_BR_CLOSE);
-		case '{': return(TK_CBR_OPEN);
-		case '}': return(TK_CBR_CLOSE);
-		case '[': return(TK_BBR_OPEN);
-		case ']': return(TK_BBR_CLOSE);
+			return TK_BIT_OR;
+		case '^': return TK_BIT_XOR;
+		case ',': return TK_COMMA;
+		case '(': return TK_BR_OPEN;
+		case ')': return TK_BR_CLOSE;
+		case '{': return TK_CBR_OPEN;
+		case '}': return TK_CBR_CLOSE;
+		case '[': return TK_BBR_OPEN;
+		case ']': return TK_BBR_CLOSE;
 		case '0': case '1': case '2': case '3': case '4':
 		case '5': case '6': case '7': case '8': case '9':
-			return lex_require_multiple_chars(ls, kf, c);
+			return TK_NONE;
 		case '"':
-			return(TK_QUOTE);
+			return TK_QUOTE;
 		default:
 			{
 				char name[17];
@@ -115,15 +119,16 @@ int lex_next(LexState* ls, KeywordInfo *kf)
 				int j;
 				for (j=TOK_FIRST_KW; j<=TOK_LAST_KW; j++)
 					if (strlen(lex_keywords[j-TOK_FIRST_KW]) == i && strncmp(name, lex_keywords[j-TOK_FIRST_KW], i) == 0)
-						return(j);
+						return j;
 
-				memcpy(kf->name, name, i+1);
-				return(TK_NAME);
+				memcpy(ls->kf.name, name, i+1);
+				return TK_NAME;
 		}
 	}
-	return(TK_NONE);
+	return TK_NONE;
 }
 
+/*
 int lex_require_multiple_chars(LexState* ls, KeywordInfo *kf, char chr)
 {
 	char digits[7];
@@ -136,16 +141,16 @@ int lex_require_multiple_chars(LexState* ls, KeywordInfo *kf, char chr)
 		switch(last_chr) {
 			case '-':
 				if (c == '-')
-					return(TK_COMMENT);
+					return TK_COMMENT);
 				ungetc(c, ls->src);
-				return(TK_MINUS);
+				return TK_MINUS);
 			case '<':
 				switch(c) {
-					case '<': return(TK_BIT_SL);
-					case '=': return(TK_LESSEQUALS);
+					case '<': return TK_BIT_SL);
+					case '=': return TK_LESSEQUALS);
 				}
 				ungetc(c, ls->src);
-					return(TK_LESS);
+					return TK_LESS);
 			case '0': case '1': case '2': case '3': case '4':
 			case '5': case '6': case '7': case '8': case '9':
 				if(c >= '0' && c <= '9') {
@@ -158,8 +163,8 @@ int lex_require_multiple_chars(LexState* ls, KeywordInfo *kf, char chr)
 				} else {
 					ungetc(c, ls->src);
 					kf->number = atoi(digits);
-					return(TK_NUMBER);
+					return TK_NUMBER);
 				}
 		}
 	}
-}
+}*/
