@@ -74,14 +74,14 @@ typedef struct
 	int line;	// the current line number
 } LexState;
 
-// to store additional info about the name
+// to store additional info about the keyword
 typedef struct
 {
 	char name[17];
-} lex_NameInfo;
+} KeywordInfo;
 
 void lex_init(LexState* ls, FILE* fp);
-int lex_next(LexState* ls, lex_NameInfo* ni);
+int lex_next(LexState* ls, KeywordInfo *kf);
 int lex_test(char* file);
 
 #endif /* LEX_H_ */

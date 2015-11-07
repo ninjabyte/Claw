@@ -23,8 +23,8 @@ void lex_init(LexState* ls, FILE* fp)
 }
 
 // try to read the next token
-// if its a name, put it into nf
-int lex_next(LexState* ls, void* nf)
+// if its a name, put it into kf
+int lex_next(LexState* ls, KeywordInfo *kf)
 {
 	int c = fgetc(ls->src), c0;
 	switch(c)
@@ -124,7 +124,7 @@ int lex_next(LexState* ls, void* nf)
 				if (strlen(lex_keywords[j-TOK_FIRST_KW]) == i && strncmp(name, lex_keywords[j-TOK_FIRST_KW], i) == 0)
 					return j;
 
-			memcpy(((lex_NameInfo)nf)->name, name, i+1);
+			memcpy(kf->name, name, i+1);
 			return TK_NAME;
 		}
 	}
@@ -143,14 +143,14 @@ int lex_test(char* file)
 	LexState ls;
 	lex_init(&ls, fp);
 
-	lex_NameInfo ni;
+	KeywordInfo kf;
 
 	while (!feof(fp))
 	{
-		int tok = lex_next(&ls, &ni);
+		int tok = lex_next(&ls, &kf);
 		printf("%i", tok);
 		if (tok == TK_NAME)
-			printf(" %s", ni.name);
+			printf(" %s", kf.name);
 		printf("\n");
 	}
 
