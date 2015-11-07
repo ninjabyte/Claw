@@ -16,10 +16,6 @@
 
 int main(int argc, char *argv[])
 {
-	char str[] = "-192x";
-	char outputQueue[strlen(str)];
-	volatile int lol = toRpn(str, outputQueue);
-
 	if(argc < 2) {
 		error("No file specified!");
 		return -1;
