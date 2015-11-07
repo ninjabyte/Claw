@@ -46,6 +46,26 @@ int lex_nextLong(LexState* ls, char c0, int defaultTok)
 			return defaultTok;
 	}
 }
+/*
+int lex_nextNumber(LexState* ls, char c)
+{
+	if(c >= '0' && c <= '9')
+	{
+		if(digit_ptr < 7)
+		{
+			digits[digit_ptr++] = c;
+			last_chr = c;
+			continue;
+		} else
+			return TK_NONE; // ERROR - OVERFLOW!!!
+		} else
+		{
+			ungetc(c, ls->src);
+			kf->number = atoi(digits);
+			return TK_NUMBER;
+		}
+	}
+}*/
 
 // try to read the next token
 // if its a name, put it into kf
