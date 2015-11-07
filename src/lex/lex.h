@@ -77,8 +77,6 @@ typedef struct
 
 typedef struct
 {
-	char number_digits[7];
-	char number_digit_ptr;
 } KeywordBuffer;
 
 // lexer state
@@ -87,8 +85,8 @@ typedef struct
 	FILE* src;	// the source file
 	int line;	// the current line number
 	int last_token; // last parsed token
-	KeywordBuffer *kb;
-	KeywordInfo *kf;
+	KeywordBuffer kb;
+	KeywordInfo kf;
 } LexState;
 
 void lex_init(LexState* ls, FILE* fp);

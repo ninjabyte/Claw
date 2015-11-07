@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include "lex.h"
 #include "../error/error.h"
@@ -121,23 +122,24 @@ int lex_nextLong(LexState* ls, char c0, int defaultTok)
 
 int lex_nextNumber(LexState* ls, char c)
 {
-	while(1) {
-		if(c >= '0' && c <= '9')
+	uint16_t number;
+	uint8_t i;
+
+	for (i=0; i<7; i++)
+	{
+		if (c >= '0' && c <= '9')
 		{
-			if(ls->kb->number_digit_ptr < 7)
-			{
-				ls->kb->number_digits[ls->kb->number_digit_ptr++] = c;
-			} else
-				return TK_NONE; // ERROR - OVERFLOW!!!
+			number *= 10;
+			number += c - '0';
 		} else {
 			ungetc(c, ls->src);
-			ls->kf->number = atoi(ls->kb->number_digits);
-			while(ls->kb->number_digit_ptr > 0)
-				ls->kb->number_digits[ls->kb->number_digit_ptr--] = 0;
-			return TK_NUMBER;
+			break;
 		}
 
-		c = fgetc(ls->src);
+		if(i+1 < 7)
+			c = fgetc(ls->src);
 	}
-	return TK_NONE;
+
+	ls->kf.number = number;
+	return TK_NUMBER;
 }
