@@ -80,8 +80,11 @@ typedef struct
 {
 	FILE* src;	// the source file
 	int line;	// the current line number
+<<<<<<< HEAD
 	int last_token; // last parsed token
 	KeywordInfo kf;
+=======
+>>>>>>> origin/master
 } LexState;
 
 void lex_init(LexState* ls, FILE* fp);
