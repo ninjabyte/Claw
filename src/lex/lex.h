@@ -74,7 +74,6 @@ typedef struct
 	FILE* src;	// the source file
 	int line;	// the current line number
 	int last_token; // last parsed token
-	char last_chr; // last character
 } LexState;
 
 // to store additional info about the keyword
