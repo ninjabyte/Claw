@@ -133,11 +133,11 @@ int lex_nextNumber(LexState* ls, char c)
 			number *= 10;
 			number += c - '0';
 			c = fgetc(ls->src);
-		} else {
-			ungetc(c, ls->src);
+		} else
 			break;
-		}
 	}
+
+	ungetc(c, ls->src);
 
 	ls->kf.number = number;
 	return TK_NUMBER;
