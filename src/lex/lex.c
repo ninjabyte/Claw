@@ -132,6 +132,8 @@ int lex_nextNumber(LexState* ls, char c)
 		} else {
 			ungetc(c, ls->src);
 			ls->kf->number = atoi(ls->kb->number_digits);
+			while(ls->kb->number_digit_ptr > 0)
+				ls->kb->number_digits[ls->kb->number_digit_ptr--] = 0;
 			return TK_NUMBER;
 		}
 
