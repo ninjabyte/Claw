@@ -29,14 +29,12 @@ int do_parse(char* file)
 	LexState ls;
 	lex_init(&ls, fp);
 
-	KeywordInfo kf;
-
 	while (!feof(fp))
 	{
-		int tok = lex_next(&ls, &kf);
+		int tok = lex_next(&ls);
 		printf("%i", tok);
 		if (tok == TK_NAME)
-			printf(" %s", kf.name);
+			printf(" %s", ls.kf.name);
 		printf("\n");
 	}
 

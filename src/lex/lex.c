@@ -9,33 +9,57 @@ const char* lex_keywords[] =
 	"break",	"continue",	"block",	"else",
 	"elseif",	"end",		"false",	"for",
 	"function",	"if",		"return",	"true",
-	"var", "while"
+	"var", 		"while"
 };
 
 // the alphabet of characters allowed in a name
 #define ALPHABET "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_"
-#define isLetter(chr) (chr != 0 && strchr(ALPHABET, chr) != NULL)
+#define isLetter(chr) ((chr) != 0 && strchr(ALPHABET, chr) != NULL)
+#define hash(c0, c1) ((c0) << 8 | (c1))
 
 // initialize a lexer
 void lex_init(LexState* ls, FILE* fp)
 {
 	ls->line = 0;
 	ls->src = fp;
+	ls->last_token = TK_NONE;
 }
 
 // try to match a token of 2 chars
-int lex_nextLongToken(LexState* ls, char c0, char c1)
+int lex_nextLong(LexState* ls, char c0, int defaultTok)
 {
-	return 0;
+	int c1 = fgetc(ls->src);
+	if (c1 == EOF)
+	{
+		ungetc(c1, ls->src);
+		return defaultTok;
+	}
+
+	switch(hash(c0, (char) c1))
+	{
+		case hash('>', '>'): return TK_BIT_SR;
+		case hash('>', '='): return TK_GREATEREQUALS;
+		case hash('<', '<'): return TK_BIT_SL;
+		case hash('<', '='): return TK_LESSEQUALS;
+		case hash('=', '='): return TK_EQUALS;
+		case hash('!', '='): return TK_UNEQUALS;
+		case hash('|', '|'): return TK_OR;
+		case hash('&', '&'): return TK_AND;
+		case hash('-', '-'): return TK_COMMENT;
+		default:
+			ungetc(c1, ls->src);
+			return defaultTok;
+	}
 }
 
 // try to read the next token
 // if its a name, put it into kf
 int lex_next(LexState* ls)
 {
-	int c = fgetc(ls->src), c1;
+	int c = fgetc(ls->src);
 
-	switch(c) {
+	switch(c)
+	{
 		case 0:
 		case EOF:
 			return TK_EOI;
@@ -46,46 +70,16 @@ int lex_next(LexState* ls)
 		case ' ': case '\f': case '\t': case '\v': case ';': // whitespace
 			return TK_WHITESPACE;
 		case '+': return TK_PLUS;
-		case '-':	// TK_MINUS or TK_COMMENT
-			return TK_NONE;
+		case '-': return lex_nextLong(ls, c, TK_MINUS);// TK_MINUS or TK_COMMENT
 		case '*': return TK_MULTIPLY;
 		case '/': return TK_DIVIDE;
 		case '%': return TK_MODULUS;
-		case '<':	// TK_LESS, TK_LESSEQUALS or TK_BIT_SL
-			return TK_NONE;
-		case '>':	// TK_GREATER, TK_GREATEREQUALS or TK_BIT_SR
-			c1 = fgetc(ls->src);
-			switch(c1)
-			{
-			case '>': return TK_BIT_SR;
-			case '=': return TK_GREATEREQUALS;
-			}
-			ungetc(c1, ls->src);
-			return TK_GREATER;
-		case '=':	// TK_ASSIGN or TK_EQUALS
-			c1 = fgetc(ls->src);
-			if (c1 == '=')
-				return TK_EQUALS;
-			ungetc(c1, ls->src);
-			return TK_ASSIGN;
-		case '!':	// TK_BIT_NOT or TK_UNEQUALS
-			c1 = fgetc(ls->src);
-			if (c1 == '=')
-				return TK_UNEQUALS ;
-			ungetc(c1, ls->src);
-			return TK_BIT_NOT;
-		case '&':	// TK_AND or TK_BIT_AND
-			c1 = fgetc(ls->src);
-			if (c1 == '&')
-				return TK_AND;
-			ungetc(c1, ls->src);
-			return TK_BIT_AND;
-		case '|':	// TK_OR or TK_BIT_OR
-			c1 = fgetc(ls->src);
-			if (c1 == '|')
-				return TK_OR;
-			ungetc(c1, ls->src);
-			return TK_BIT_OR;
+		case '<': return lex_nextLong(ls, c, TK_LESS);		// TK_LESS, TK_LESSEQUALS or TK_BIT_SL
+		case '>': return lex_nextLong(ls, c, TK_GREATER);	// TK_GREATER, TK_GREATEREQUALS or TK_BIT_SR
+		case '=': return lex_nextLong(ls, c, TK_ASSIGN);	// TK_ASSIGN or TK_EQUALS
+		case '!': return lex_nextLong(ls, c, TK_BIT_NOT);	// TK_BIT_NOT or TK_UNEQUALS
+		case '&': return lex_nextLong(ls, c, TK_AND);	// TK_AND or TK_BIT_AND
+		case '|': return lex_nextLong(ls, c, TK_OR);	// TK_OR or TK_BIT_OR
 		case '^': return TK_BIT_XOR;
 		case ',': return TK_COMMA;
 		case '(': return TK_BR_OPEN;
@@ -96,9 +90,8 @@ int lex_next(LexState* ls)
 		case ']': return TK_BBR_CLOSE;
 		case '0': case '1': case '2': case '3': case '4':
 		case '5': case '6': case '7': case '8': case '9':
-			return TK_NONE;
-		case '"':
-			return TK_QUOTE;
+			return TK_NUMBER;
+		case '"': return TK_QUOTE;
 		default:
 			{
 				char name[17];

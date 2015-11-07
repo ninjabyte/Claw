@@ -6,7 +6,7 @@
 
 enum Keyword
 {
-	TK_EOI,				// end of input
+	TK_EOI,				// end of input (0)
 	TK_NEWLINE,			// new line
 	TK_WHITESPACE,		// whitespace
 
@@ -14,49 +14,49 @@ enum Keyword
 
 	// keywords
 	TK_BREAK,			// break
-	TK_CONTINUE,		// continue
+	TK_CONTINUE,		// continue (5)
 	TK_BLOCK,			// block
 	TK_ELSE,			// else
 	TK_ELSEIF,			// elseif
 	TK_END,				// end
-	TK_FALSE,			// false
+	TK_FALSE,			// false (10)
 	TK_FOR,				// for
 	TK_FUNCTON,			// function
 	TK_IF,				// if
 	TK_RETURN,			// return
-	TK_TRUE,			// true
+	TK_TRUE,			// true (15)
 	TK_VAR,				// var
 	TK_WHILE,			// while
 
 	// key tokens
 	TK_PLUS,			// +
 	TK_MINUS,			// -
-	TK_MULTIPLY,		// *
+	TK_MULTIPLY,		// * (20)
 	TK_DIVIDE,			// /
 	TK_MODULUS,			// %
 	TK_LESS,			// <
 	TK_GREATER,			// >
-	TK_LESSEQUALS,		// <=
+	TK_LESSEQUALS,		// <= (25)
 	TK_GREATEREQUALS,	// >=
 	TK_EQUALS,			// ==
 	TK_UNEQUALS,		// !=
 	TK_ASSIGN,			// =
-	TK_AND,				// &&
+	TK_AND,				// && (30)
 	TK_OR,				// ||
 	TK_BIT_OR,			// |
 	TK_BIT_AND,			// &
 	TK_BIT_NOT,			// !
-	TK_BIT_SL,			// <<
+	TK_BIT_SL,			// << (35)
 	TK_BIT_SR,			// >>
 	TK_BIT_XOR,			// ^
 	TK_COMMA,			// ,
 	TK_BR_OPEN,			// (
-	TK_BR_CLOSE,		// )
+	TK_BR_CLOSE,		// ) (40)
 	TK_CBR_OPEN,		// {
 	TK_CBR_CLOSE,		// }
 	TK_BBR_OPEN,		// [
 	TK_BBR_CLOSE,		// ]
-	TK_COMMENT,			// --
+	TK_COMMENT,			// -- (45)
 	TK_NUMBER,			// 0-9
 	TK_QUOTE,			// "
 	NUM_KEYWORDS,
@@ -80,16 +80,13 @@ typedef struct
 {
 	FILE* src;	// the source file
 	int line;	// the current line number
-<<<<<<< HEAD
 	int last_token; // last parsed token
 	KeywordInfo kf;
-=======
->>>>>>> origin/master
 } LexState;
 
 void lex_init(LexState* ls, FILE* fp);
+int lex_nextLong(LexState* ls, char c0, int defaultTok);
 int lex_next(LexState* ls);
-int lex_require_multiple_chars(LexState* ls, KeywordInfo *kf, char chr);
 int lex_test(char* file);
 
 #endif /* LEX_H_ */
