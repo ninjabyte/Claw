@@ -53,7 +53,7 @@ int do_compile(char* input_file, char* output_file, CplHeader* ch)
 				printf("char: 0x%02hhX", ls.kf.character);
 			break;
 		case TK_NUMBER:
-			printf(" number: %d", ls.kf.number);
+			printf("number: %d", ls.kf.number);
 			break;
 		default:
 			if(tok >= TOK_FIRST_KW && tok <= TOK_LAST_KW)
