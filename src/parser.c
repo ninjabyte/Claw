@@ -32,11 +32,11 @@ int do_parse(char* file)
 	while (!feof(fp))
 	{
 		int tok = lex_next(&ls);
-		printf("%i", tok);
+		printf("%d", tok);
 		if (tok == TK_NAME)
-			printf(" %s", ls.kf.name);
+			printf(" name: %s", ls.kf.name);
 		if (tok == TK_NUMBER)
-					printf(" %d", ls.kf.number);
+			printf(" number: %d", ls.kf.number);
 		printf("\n");
 	}
 
