@@ -24,14 +24,14 @@ while gameloop
 	draw()
 end
 
-function draw()
+action draw()
 	circle(ballx,bally,4) --(x,y,radius)
 	rect(lx,ly,lw,lh) --(x,y,width,height)
 	rect(rx,ry,rw,rh) --(x,y,width,height)
 	line(64,0,64,128)
 end
 
-function update()
+action update()
 	if dx --if true
 		ballx += 1
 	else

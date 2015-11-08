@@ -8,8 +8,8 @@
 const char* lex_keywords[] = {
 	"break",	"continue",	"block",	"else",
 	"elseif",	"end",		"false",	"for",
-	"function",	"if",		"return",	"true",
-	"var", 		"while"
+	"function",	"action",	"if",		"return",
+	"true",		"var", 		"while"
 };
 
 #define IS_LETTER(chr) (((chr) >= 'A' && (chr) <= 'Z') || ((chr) >= 'a' && (chr) <= 'z') || ((chr) == '_'))

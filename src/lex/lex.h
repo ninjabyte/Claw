@@ -25,6 +25,7 @@ enum Keyword
 	TK_FALSE,			// false
 	TK_FOR,				// for
 	TK_FUNCTON,			// function
+	TK_ACTION,			// action
 	TK_IF,				// if
 	TK_RETURN,			// return (15)
 	TK_TRUE,			// true
