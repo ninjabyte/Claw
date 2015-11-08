@@ -21,6 +21,7 @@ const char* lex_keywords[] =
 
 int lex_nextLong(LexState* ls, char c0, int defaultTok);
 int lex_nextNumber(LexState* ls, char c0);
+int lex_nextWord(LexState* ls, char c0);
 
 // initialize a lexer
 void lex_init(LexState* ls, FILE* fp)
@@ -70,6 +71,7 @@ int lex_next(LexState* ls)
 		case '5': case '6': case '7': case '8': case '9':
 			return lex_nextNumber(ls, c);
 		case '"': return TK_QUOTE;
+<<<<<<< HEAD
 		default:
 			{
 				char name[17];
@@ -95,6 +97,9 @@ int lex_next(LexState* ls)
 				memcpy(ls->kf.name, name, i+1);
 				return TK_NAME;
 		}
+=======
+		default: return lex_nextWord(ls, c);
+>>>>>>> origin/master
 	}
 	return TK_NONE;
 }
@@ -143,4 +148,31 @@ int lex_nextNumber(LexState* ls, char c0)
 
 	ls->kf.number = number;
 	return TK_NUMBER;
+}
+
+// try t match the next word. Returns a keyword if the next word is a keyword
+int lex_nextWord(LexState* ls, char c0)
+{
+	char name[17];
+	int i;
+	for (i=0; i<16; i++)
+	{
+		name[i] = (char) c0;
+		c0 = fgetc(ls->src);
+		if (c0 == EOF)
+		break;
+		if (!isLetter(c0))
+		{
+			ungetc(c0, ls->src);
+			break;
+		}
+	}
+	name[++i] = 0;
+	int j;
+	for (j=TOK_FIRST_KW; j<=TOK_LAST_KW; j++)
+		if (strlen(lex_keywords[j-TOK_FIRST_KW]) == i && strncmp(name, lex_keywords[j-TOK_FIRST_KW], i) == 0)
+			return j;
+
+	memcpy(ls->kf.name, name, i+1);
+	return TK_NAME;
 }
