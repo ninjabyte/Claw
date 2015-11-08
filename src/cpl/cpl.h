@@ -11,6 +11,8 @@
 #include <stdio.h>
 #include <stdint.h>
 
+typedef uint8_t instr_t;
+
 enum Instruction
 {
 	IN_NOP,
@@ -26,8 +28,7 @@ enum Instruction
 	IN_SWP,
 	IN_DUP,
 	IN_LEA,
-	IN_SEA,
-	IN_NONE = -1
+	IN_SEA
 };
 
 typedef struct
@@ -54,7 +55,7 @@ typedef struct
 
 void cpl_init(CplState* cs, CplHeader* ch, FILE* fp);
 void cpl_write_header(CplState* cs);
-void cpl_write_instr(CplState* cs, int instr);
+void cpl_write_instr(CplState* cs, instr_t instr);
 void cpl_write_arg8(CplState* cs, uint8_t arg);
 void cpl_write_arg16(CplState* cs, int16_t arg);
 

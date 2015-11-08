@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdint.h>
 
+typedef int8_t token_t;
+
 enum Keyword
 {
 	TK_EOI,				// end of input (0)
@@ -85,16 +87,16 @@ typedef struct
 typedef struct
 {
 	FILE* src;	// the source file
-	int line;	// the current line number
-	int last_token; // last parsed token
-	int in_comment; // is in comment
-	int in_string; // is in string
+	uint32_t line;	// the current line number
+	token_t last_token; // last parsed token
+	uint8_t in_comment; // is in comment
+	uint8_t in_string; // is in string
 	KeywordBuffer kb; // reserved
 	KeywordInfo kf; // detailed info about the keyword if available
 } LexState;
 
 void lex_init(LexState* ls, FILE* fp);
-const char* lex_getKeywordString(int tok);
-int lex_next(LexState* ls);
+const char* lex_getKeywordString(token_t tok);
+token_t lex_next(LexState* ls);
 
 #endif /* LEX_H_ */

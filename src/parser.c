@@ -32,6 +32,49 @@ int do_parse(char* file)
 	while (!feof(fp))
 	{
 		int tok = lex_next(&ls);
+
+		switch(tok) {
+
+		}
+		printf("%d", tok);
+		if (tok == TK_NAME)
+			printf(" name: %s", ls.kf.name);
+		if (tok == TK_NUMBER)
+			printf(" number: %d", ls.kf.number);
+		if (tok >= TOK_FIRST_KW && tok <= TOK_LAST_KW)
+			printf(" keyword: %s", lex_getKeywordString(tok));
+		if (tok == TK_CHARACTER)
+		{
+			if (ls.kf.character > 32)
+				printf(" char: %c", ls.kf.character);
+			else if(ls.kf.character == 32) {
+				printf(" char: (space)");
+			} else
+				printf(" char: 0x%02hhX", ls.kf.character);
+		}
+		if (tok == TK_NONE)
+			break;
+		printf("\n");
+	}
+
+	fclose(fp);
+	return ERR_NO_ERROR;
+}
+
+// parse code
+int do_debug_parse(char* file)
+{
+	FILE* fp = fopen(file, "r");
+
+	if(!fp)
+	    return ERR_INVALID_FILE;
+
+	LexState ls;
+	lex_init(&ls, fp);
+
+	while (!feof(fp))
+	{
+		int tok = lex_next(&ls);
 		printf("%d", tok);
 		if (tok == TK_NAME)
 			printf(" name: %s", ls.kf.name);

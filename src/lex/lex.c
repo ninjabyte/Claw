@@ -16,11 +16,11 @@ const char* lex_keywords[] = {
 #define IS_NUMBER(chr) ((chr) >= '0' && (chr) <= '9')
 #define HASH(c0, c1) ((c0) << 8 | (c1))
 
-int lex_nextLong(LexState* ls, char c0, int defaultTok);
-char lex_nextEscapeCode(LexState* ls);
-int lex_nextChar(LexState* ls, int c0);
-int lex_nextNumber(LexState* ls, char c0);
-int lex_nextWord(LexState* ls, char c0);
+token_t lex_nextLong(LexState*, char, token_t);
+char lex_nextEscapeCode(LexState*);
+token_t lex_nextChar(LexState*, char);
+token_t lex_nextNumber(LexState*, char);
+token_t lex_nextWord(LexState*, char);
 
 // initialize a lexer
 void lex_init(LexState* ls, FILE* fp)
@@ -33,14 +33,14 @@ void lex_init(LexState* ls, FILE* fp)
 }
 
 // get the keywords' string. doesn't check for out of bounds!
-const char* lex_getKeywordString(int tok)
+const char* lex_getKeywordString(token_t tok)
 {
 	return lex_keywords[tok-TOK_FIRST_KW];
 }
 
 // try to read the next token
 // if its a name, put it into kf
-int lex_next(LexState* ls)
+token_t lex_next(LexState* ls)
 {
 	int c = fgetc(ls->src);
 
@@ -95,7 +95,7 @@ int lex_next(LexState* ls)
 }
 
 // try to match a token of 2 chars
-int lex_nextLong(LexState* ls, char c0, int defaultTok)
+token_t lex_nextLong(LexState* ls, char c0, token_t defaultTok)
 {
 	int c1 = fgetc(ls->src);
 
@@ -124,7 +124,7 @@ char lex_nextEscapeCode(LexState* ls)
 	switch (c1){
 		case EOF:
 			ungetc(c1, ls->src);
-			return TK_NONE;
+			return -1;
 		case 'a': return '\a';
 		case 'b': return '\b';
 		case 'f': return '\f';
@@ -141,7 +141,7 @@ char lex_nextEscapeCode(LexState* ls)
 }
 
 // try to parse the next char
-int lex_nextChar(LexState* ls, int c0)
+token_t lex_nextChar(LexState* ls, char c0)
 {
 	switch(c0){
 		case 0:
@@ -156,6 +156,8 @@ int lex_nextChar(LexState* ls, int c0)
 			return lex_nextChar(ls, fgetc(ls->src));
 		case '\\':	// escape code
 			ls->kf.character = lex_nextEscapeCode(ls);
+			if(ls->kf.character == -1)
+				return TK_NONE;
 			return TK_CHARACTER;
 		default:
 			ls->kf.character = c0;
@@ -164,7 +166,7 @@ int lex_nextChar(LexState* ls, int c0)
 }
 
 // try to match a number
-int lex_nextNumber(LexState* ls, char c0)
+token_t lex_nextNumber(LexState* ls, char c0)
 {
 	uint16_t number = 0;
 	char cx = c0;
@@ -186,7 +188,7 @@ int lex_nextNumber(LexState* ls, char c0)
 }
 
 // try to match the next word. Returns a keyword if the next word is a keyword
-int lex_nextWord(LexState* ls, char c0)
+token_t lex_nextWord(LexState* ls, char c0)
 {
 	int cx = c0;
 

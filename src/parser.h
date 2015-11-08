@@ -9,6 +9,7 @@
 #define PARSER_H_
 
 int do_parse(char*);
+int do_debug_parse(char*);
 
 #define LINE_LENGTH 100
 

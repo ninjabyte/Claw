@@ -18,7 +18,7 @@ void cpl_write_header(CplState* cs)
 
 }
 
-void cpl_write_instr(CplState* cs, int instr)
+void cpl_write_instr(CplState* cs, instr_t instr)
 {
 
 }
