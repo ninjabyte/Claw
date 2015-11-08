@@ -142,7 +142,7 @@ int lex_nextWord(LexState* ls, char c0)
 
 	ls->kf.name[0] = cx;
 	uint8_t i;
-	for (i=1 ; i<16; i++)
+	for (i=1; i<16; i++)
 	{
 		cx = fgetc(ls->src);
 		if (!(IS_LETTER(cx) || IS_NUMBER(cx)) || cx == EOF)
