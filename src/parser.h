@@ -8,7 +8,9 @@
 #ifndef PARSER_H_
 #define PARSER_H_
 
-int do_parse(char*);
+#include "cpl/cpl.h"
+
+int do_compile(char*, char*, CplHeader*);
 int do_debug_parse(char*);
 
 #define LINE_LENGTH 100

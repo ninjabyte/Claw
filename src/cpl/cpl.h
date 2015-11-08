@@ -31,6 +31,13 @@ enum Instruction
 	IN_SEA
 };
 
+enum Version
+{
+	VER_MAJOR = 0,
+	VER_MINOR = 1,
+	VER_REVISION = 2
+};
+
 typedef struct
 {
 	uint8_t use_wifi;
@@ -40,8 +47,7 @@ typedef struct
 typedef struct
 {
 	char name[15];
-	char author[10];
-	char copyright[15];
+	char author[15];
 	uint8_t version[3];
 	CplPermissions permissions;
 } CplHeader;

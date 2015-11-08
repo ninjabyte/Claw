@@ -19,45 +19,54 @@
 #include "error/error.h"
 
 // parse code
-int do_parse(char* file)
+int do_compile(char* input_file, char* output_file, CplHeader* ch)
 {
-	FILE* fp = fopen(file, "r");
+	FILE* ifp = fopen(input_file, "r");
+	FILE* ofp = fopen(output_file, "w");
 
-	if(!fp)
+	if(!ifp || !ofp)
 	    return ERR_INVALID_FILE;
 
 	LexState ls;
-	lex_init(&ls, fp);
+	lex_init(&ls, ifp);
 
-	while (!feof(fp))
+	CplState cs;
+	cpl_init(&cs, ch, ofp);
+
+	cpl_write_header(&cs);
+
+	while (!feof(ifp))
 	{
 		int tok = lex_next(&ls);
 
 		switch(tok) {
-
-		}
-		printf("%d", tok);
-		if (tok == TK_NAME)
-			printf(" name: %s", ls.kf.name);
-		if (tok == TK_NUMBER)
-			printf(" number: %d", ls.kf.number);
-		if (tok >= TOK_FIRST_KW && tok <= TOK_LAST_KW)
-			printf(" keyword: %s", lex_getKeywordString(tok));
-		if (tok == TK_CHARACTER)
-		{
-			if (ls.kf.character > 32)
-				printf(" char: %c", ls.kf.character);
-			else if(ls.kf.character == 32) {
-				printf(" char: (space)");
-			} else
-				printf(" char: 0x%02hhX", ls.kf.character);
-		}
-		if (tok == TK_NONE)
+		case TK_NAME:
+			printf("name: %s", ls.kf.name);
 			break;
+		case TK_CHARACTER:
+			cpl_write_arg8(&cs, ls.kf.character);
+			if (ls.kf.character > 32) {
+				printf("char: %c", ls.kf.character);
+			} else if(ls.kf.character == 32) {
+				printf("char: (space)");
+			} else
+				printf("char: 0x%02hhX", ls.kf.character);
+			break;
+		case TK_NUMBER:
+			printf(" number: %d", ls.kf.number);
+			break;
+		default:
+			if(tok >= TOK_FIRST_KW && tok <= TOK_LAST_KW)
+				printf("keyword: %s", lex_getKeywordString(tok));
+			else
+				printf("token: %d", tok);
+			break;
+		}
 		printf("\n");
 	}
 
-	fclose(fp);
+	fclose(ifp);
+	fclose(ofp);
 	return ERR_NO_ERROR;
 }
 
