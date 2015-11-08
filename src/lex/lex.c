@@ -145,10 +145,10 @@ int lex_nextWord(LexState* ls, char c0)
 	}
 
 	name[++i] = 0;
-//	int j;
-//	for (j=TOK_FIRST_KW; j<=TOK_LAST_KW; j++)
-//		if (strlen(lex_keywords[j-TOK_FIRST_KW]) == i && strncmp(name, lex_keywords[j-TOK_FIRST_KW], i) == 0)
-//			return j;
+	int j;
+	for (j=TOK_FIRST_KW; j<=TOK_LAST_KW; j++)
+		if (strlen(lex_keywords[j-TOK_FIRST_KW]) == i && strncmp(name, lex_keywords[j-TOK_FIRST_KW], i) == 0)
+			return j;
 
 	memcpy(ls->kf.name, name, i+1);
 	return TK_NAME;
