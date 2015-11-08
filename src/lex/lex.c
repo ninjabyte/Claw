@@ -129,8 +129,10 @@ int lex_nextNumber(LexState* ls, char c0)
 // try t match the next word. Returns a keyword if the next word is a keyword
 int lex_nextWord(LexState* ls, char c0)
 {
-	char name[17];
 	int cx = c0;
+
+	for(int i=0; i<17; i++)
+		ls->kf.name[i] = 0;
 
 	if (!IS_LETTER(cx))
 	{
@@ -138,7 +140,7 @@ int lex_nextWord(LexState* ls, char c0)
 		return TK_NONE;
 	}
 
-	name[0] = cx;
+	ls->kf.name[0] = cx;
 	uint8_t i = 1;
 	for ( ; i<16; i++)
 	{
@@ -148,15 +150,14 @@ int lex_nextWord(LexState* ls, char c0)
 			ungetc(cx, ls->src);
 			break;
 		}
-		name[i] = cx;
+		ls->kf.name[i] = cx;
 	}
 
-	name[++i] = 0;
+	ls->kf.name[++i] = 0;
 	int kw;
 	for (kw=TOK_FIRST_KW; kw<=TOK_LAST_KW; kw++)
-		if (strncmp(name, lex_getKeywordString(kw), i) == 0)
+		if (strncmp(ls->kf.name, lex_getKeywordString(kw), i) == 0)
 			return kw;
 
-	memcpy(ls->kf.name, name, i+1);
 	return TK_NAME;
 }
