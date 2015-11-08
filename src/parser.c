@@ -37,6 +37,8 @@ int do_parse(char* file)
 			printf(" name: %s", ls.kf.name);
 		if (tok == TK_NUMBER)
 			printf(" number: %d", ls.kf.number);
+		if (tok == TK_NONE)
+			break;
 		printf("\n");
 	}
 
