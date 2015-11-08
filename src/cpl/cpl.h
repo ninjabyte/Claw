@@ -53,10 +53,10 @@ typedef struct
 	CplHeader ch; // header
 } CplState;
 
-void cpl_init(CplState* cs, CplHeader* ch, FILE* fp);
-void cpl_write_header(CplState* cs);
-void cpl_write_instr(CplState* cs, instr_t instr);
-void cpl_write_arg8(CplState* cs, uint8_t arg);
-void cpl_write_arg16(CplState* cs, int16_t arg);
+void cpl_init(CplState*, CplHeader*, FILE*);
+void cpl_write_header(CplState*);
+void cpl_write_instr(CplState*, instr_t);
+void cpl_write_arg8(CplState*, uint8_t);
+void cpl_write_arg16(CplState*, int16_t);
 
 #endif /* CPL_CPL_H_ */
