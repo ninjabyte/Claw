@@ -40,6 +40,11 @@ int lex_next(LexState* ls)
 {
 	int c = fgetc(ls->src);
 
+	if(c != EOF && ((c != '"' && ls->in_string) || (c != '\n' && c != '\r' && ls->in_comment))) {
+		ls->kf.character = (char)c;
+		return TK_CHARACTER;
+	}
+
 	switch(c) {
 		case 0:
 		case EOF:
@@ -47,9 +52,13 @@ int lex_next(LexState* ls)
 		case '\n':	// line breaks
 		case '\r':
 			ls->line++;
+			ls->in_comment = 0;
 			return TK_NEWLINE;
 		case ' ': case '\f': case '\t': case '\v': case ';': // whitespace
 			return TK_WHITESPACE;
+		case '"':
+			ls->in_string = !(ls->in_string);
+			return TK_QUOTE;
 		case '+': return TK_PLUS;
 		case '-': return lex_nextLong(ls, c, TK_MINUS);	// TK_MINUS or TK_COMMENT
 		case '*': return TK_MULTIPLY;
@@ -72,7 +81,6 @@ int lex_next(LexState* ls)
 		case '0': case '1': case '2': case '3': case '4':
 		case '5': case '6': case '7': case '8': case '9':
 			return lex_nextNumber(ls, c);
-		case '"': return TK_QUOTE;
 		default: return lex_nextWord(ls, c);
 	}
 	return TK_NONE;
@@ -92,7 +100,9 @@ int lex_nextLong(LexState* ls, char c0, int defaultTok)
 		case HASH('!', '='): return TK_UNEQUALS;
 		case HASH('|', '|'): return TK_OR;
 		case HASH('&', '&'): return TK_AND;
-		case HASH('-', '-'): return TK_COMMENT;
+		case HASH('-', '-'):
+			ls->in_comment = 1;
+			return TK_COMMENT;
 		default:
 			ungetc(c1, ls->src);
 			return defaultTok;
@@ -121,7 +131,7 @@ int lex_nextNumber(LexState* ls, char c0)
 	return TK_NUMBER;
 }
 
-// try t match the next word. Returns a keyword if the next word is a keyword
+// try to match the next word. Returns a keyword if the next word is a keyword
 int lex_nextWord(LexState* ls, char c0)
 {
 	int cx = c0;

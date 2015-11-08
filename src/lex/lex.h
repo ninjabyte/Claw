@@ -11,6 +11,7 @@ enum Keyword
 	TK_WHITESPACE,		// whitespace
 
 	TK_NAME,			// a name. Maximum length of 16 characters
+	TK_CHARACTER,		// a character in a string
 
 	// keywords
 	TK_BREAK,			// break
@@ -73,6 +74,7 @@ typedef struct
 {
 	char name[17];
 	uint16_t number;
+	char character;
 } KeywordInfo;
 
 typedef struct
@@ -85,8 +87,10 @@ typedef struct
 	FILE* src;	// the source file
 	int line;	// the current line number
 	int last_token; // last parsed token
-	KeywordBuffer kb;
-	KeywordInfo kf;
+	int in_comment; // is in comment
+	int in_string; // is in string
+	KeywordBuffer kb; // reserved
+	KeywordInfo kf; // detailed info about the keyword if available
 } LexState;
 
 void lex_init(LexState* ls, FILE* fp);
