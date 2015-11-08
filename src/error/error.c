@@ -4,7 +4,7 @@
 // error messages
 const char* error_messages[] =
 {
-	"No error occured",
+	"No errors occurred",
 	"Invalid file"
 	"Unexpected input",
 	"Unexpected end of input",
