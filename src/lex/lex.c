@@ -15,15 +15,10 @@ const char* lex_keywords[] =
 
 // the alphabet of characters allowed in a name
 #define ALPHABET "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_"
-<<<<<<< HEAD
 #define IS_LETTER(chr) ((chr) != 0 && strchr(ALPHABET, chr) != NULL)
+#define IS_NUMBER(chr) (chr >= '0' && chr <= '9')
 #define IS_VALID_LETTER_NAME(chr) ((chr >= 'A' && chr <= 'Z') || (chr >= 'a' && chr <= 'z') || (chr == '_'))
 #define HASH(c0, c1) ((c0) << 8 | (c1))
-=======
-#define isLetter(chr) ((chr) != 0 && strchr(ALPHABET, chr) != NULL)
-#define isNumber(chr) ((chr) >= '0' && (chr) <= '9')
-#define hash(c0, c1) ((c0) << 8 | (c1))
->>>>>>> origin/master
 
 int lex_nextLong(LexState* ls, char c0, int defaultTok);
 int lex_nextNumber(LexState* ls, char c0);
@@ -77,35 +72,7 @@ int lex_next(LexState* ls)
 		case '5': case '6': case '7': case '8': case '9':
 			return lex_nextNumber(ls, c);
 		case '"': return TK_QUOTE;
-<<<<<<< HEAD
-		default:
-			{
-				char name[17];
-				int i;
-				for (i=0; i<16; i++)
-				{
-					name[i] = (char) c;
-					c = fgetc(ls->src);
-					if (c == EOF)
-						break;
-					if (!IS_LETTER(c))
-					{
-						ungetc(c, ls->src);
-						break;
-					}
-				}
-				name[++i] = 0;
-				int j;
-				for (j=TOK_FIRST_KW; j<=TOK_LAST_KW; j++)
-					if (strlen(lex_keywords[j-TOK_FIRST_KW]) == i && strncmp(name, lex_keywords[j-TOK_FIRST_KW], i) == 0)
-						return j;
-
-				memcpy(ls->kf.name, name, i+1);
-				return TK_NAME;
-		}
-=======
 		default: return lex_nextWord(ls, c);
->>>>>>> origin/master
 	}
 	return TK_NONE;
 }
@@ -141,7 +108,7 @@ int lex_nextNumber(LexState* ls, char c0)
 
 	for ( ; i<7; i++)
 	{
-		if (isNumber(cx))
+		if (IS_NUMBER(cx))
 		{
 			number *= 10;
 			number += cx - '0';
@@ -162,7 +129,7 @@ int lex_nextWord(LexState* ls, char c0)
 	char name[17];
 	int cx = c0;
 
-	if (!isLetter(cx))
+	if (!IS_LETTER(cx))
 	{
 		ungetc(c0, ls->src);
 		return TK_NONE;
@@ -171,7 +138,7 @@ int lex_nextWord(LexState* ls, char c0)
 	uint8_t i;
 	for (i=1; i<16; i++)
 	{
-		if (!isLetter(cx) || cx == EOF)
+		if (!IS_LETTER(cx) || cx == EOF)
 		{
 			break;
 		}
