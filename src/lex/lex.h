@@ -72,7 +72,7 @@ enum Keyword
 typedef struct
 {
 	char name[17];
-	int16_t number;
+	uint16_t number;
 } KeywordInfo;
 
 typedef struct
