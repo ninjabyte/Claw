@@ -18,7 +18,7 @@
 #include "cpl/cpl.h"
 #include "error/error.h"
 
-// test the lexer
+// parse code
 int do_parse(char* file)
 {
 	FILE* fp = fopen(file, "r");

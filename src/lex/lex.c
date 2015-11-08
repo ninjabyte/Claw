@@ -5,8 +5,7 @@
 #include "lex.h"
 #include "../error/error.h"
 
-const char* lex_keywords[] =
-{
+const char* lex_keywords[] = {
 	"break",	"continue",	"block",	"else",
 	"elseif",	"end",		"false",	"for",
 	"function",	"if",		"return",	"true",
@@ -41,8 +40,7 @@ int lex_next(LexState* ls)
 {
 	int c = fgetc(ls->src);
 
-	switch(c)
-	{
+	switch(c) {
 		case 0:
 		case EOF:
 			return TK_EOI;
@@ -85,8 +83,7 @@ int lex_nextLong(LexState* ls, char c0, int defaultTok)
 {
 	int c1 = fgetc(ls->src);
 
-	switch(HASH(c0, (char) c1))
-	{
+	switch(HASH(c0, (char) c1)) {
 		case HASH('>', '>'): return TK_BIT_SR;
 		case HASH('>', '='): return TK_GREATEREQUALS;
 		case HASH('<', '<'): return TK_BIT_SL;
@@ -109,15 +106,12 @@ int lex_nextNumber(LexState* ls, char c0)
 	char cx = c0;
 
 	uint8_t i;
-	for (i=0; i<7; i++)
-	{
-		if (IS_NUMBER(cx))
-		{
+	for (i=0; i<7; i++) {
+		if (IS_NUMBER(cx)) {
 			number *= 10;
 			number += cx - '0';
 			cx = fgetc(ls->src);
-		}else
-		{
+		} else {
 			ungetc(cx, ls->src);
 			break;
 		}
@@ -135,19 +129,16 @@ int lex_nextWord(LexState* ls, char c0)
 	for(int i=0; i<17; i++)
 		ls->kf.name[i] = 0;
 
-	if (!IS_LETTER(cx))
-	{
+	if (!IS_LETTER(cx)) {
 		ungetc(c0, ls->src);
 		return TK_NONE;
 	}
 
 	ls->kf.name[0] = cx;
 	uint8_t i;
-	for (i=1; i<16; i++)
-	{
+	for (i=1; i<16; i++) {
 		cx = fgetc(ls->src);
-		if (!(IS_LETTER(cx) || IS_NUMBER(cx)) || cx == EOF)
-		{
+		if (!(IS_LETTER(cx) || IS_NUMBER(cx)) || cx == EOF) {
 			ungetc(cx, ls->src);
 			i--;
 			break;
