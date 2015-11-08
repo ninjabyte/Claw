@@ -139,8 +139,8 @@ int lex_nextWord(LexState* ls, char c0)
 	}
 
 	name[0] = cx;
-	uint8_t i = 1;
-	for ( ; i<16; i++)
+	uint8_t i;
+	for (i=1 ; i<16; i++)
 	{
 		cx = fgetc(ls->src);
 		if (!(IS_LETTER(cx) || IS_NUMBER(cx)) || cx == EOF)
