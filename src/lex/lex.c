@@ -15,9 +15,15 @@ const char* lex_keywords[] =
 
 // the alphabet of characters allowed in a name
 #define ALPHABET "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_"
+<<<<<<< HEAD
 #define IS_LETTER(chr) ((chr) != 0 && strchr(ALPHABET, chr) != NULL)
 #define IS_VALID_LETTER_NAME(chr) ((chr >= 'A' && chr <= 'Z') || (chr >= 'a' && chr <= 'z') || (chr == '_'))
 #define HASH(c0, c1) ((c0) << 8 | (c1))
+=======
+#define isLetter(chr) ((chr) != 0 && strchr(ALPHABET, chr) != NULL)
+#define isNumber(chr) ((chr) >= '0' && (chr) <= '9')
+#define hash(c0, c1) ((c0) << 8 | (c1))
+>>>>>>> origin/master
 
 int lex_nextLong(LexState* ls, char c0, int defaultTok);
 int lex_nextNumber(LexState* ls, char c0);
@@ -135,7 +141,7 @@ int lex_nextNumber(LexState* ls, char c0)
 
 	for ( ; i<7; i++)
 	{
-		if (cx >= '0' && cx <= '9')
+		if (isNumber(cx))
 		{
 			number *= 10;
 			number += cx - '0';
@@ -154,18 +160,23 @@ int lex_nextNumber(LexState* ls, char c0)
 int lex_nextWord(LexState* ls, char c0)
 {
 	char name[17];
-	int i;
-	for (i=0; i<16; i++)
+	int cx = c0;
+
+	if (!isLetter(cx))
 	{
-		name[i] = (char) c0;
-		c0 = fgetc(ls->src);
-		if (c0 == EOF)
-		break;
-		if (!isLetter(c0))
+		ungetc(c0, ls->src);
+		return TK_NONE;
+	}
+
+	uint8_t i;
+	for (i=1; i<16; i++)
+	{
+		if (!isLetter(cx) || cx == EOF)
 		{
-			ungetc(c0, ls->src);
 			break;
 		}
+		name[i] = (char) cx;
+		cx = fgetc(ls->src);
 	}
 	name[++i] = 0;
 	int j;
