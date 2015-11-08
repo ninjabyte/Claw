@@ -146,6 +146,7 @@ int lex_nextWord(LexState* ls, char c0)
 		if (!(IS_LETTER(cx) || IS_NUMBER(cx)) || cx == EOF)
 		{
 			ungetc(cx, ls->src);
+			i--;
 			break;
 		}
 		name[i] = cx;
@@ -156,7 +157,6 @@ int lex_nextWord(LexState* ls, char c0)
 	for (kw=TOK_FIRST_KW; kw<=TOK_LAST_KW; kw++)
 		if (strncmp(name, lex_getKeywordString(kw), i) == 0)
 			return kw;
-
 	memcpy(ls->kf.name, name, i+1);
 	return TK_NAME;
 }
