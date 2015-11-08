@@ -36,9 +36,9 @@ typedef struct
 	FILE* dst;	// the destination file
 } CplState;
 
-void cpl_init(CplState* ls, FILE* fp);
-void cpl_write_instr(CplState* ls, int instr);
-void cpl_write_arg8(CplState* ls, uint8_t arg);
-void cpl_write_arg16(CplState* ls, int16_t arg);
+void cpl_init(CplState* cs, FILE* fp);
+void cpl_write_instr(CplState* cs, int instr);
+void cpl_write_arg8(CplState* cs, uint8_t arg);
+void cpl_write_arg16(CplState* cs, int16_t arg);
 
 #endif /* CPL_CPL_H_ */
