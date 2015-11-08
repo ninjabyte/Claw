@@ -116,7 +116,8 @@ int lex_nextNumber(LexState* ls, char c0)
 			number *= 10;
 			number += cx - '0';
 			cx = fgetc(ls->src);
-		} else {
+		}else
+		{
 			ungetc(cx, ls->src);
 			break;
 		}
