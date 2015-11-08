@@ -15,8 +15,9 @@ const char* lex_keywords[] =
 
 // the alphabet of characters allowed in a name
 #define ALPHABET "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_"
-#define isLetter(chr) ((chr) != 0 && strchr(ALPHABET, chr) != NULL)
-#define hash(c0, c1) ((c0) << 8 | (c1))
+#define IS_LETTER(chr) ((chr) != 0 && strchr(ALPHABET, chr) != NULL)
+#define IS_VALID_LETTER_NAME(chr) ((chr >= 'A' && chr <= 'Z') || (chr >= 'a' && chr <= 'z') || (chr == '_'))
+#define HASH(c0, c1) ((c0) << 8 | (c1))
 
 int lex_nextLong(LexState* ls, char c0, int defaultTok);
 int lex_nextNumber(LexState* ls, char c0);
@@ -79,7 +80,7 @@ int lex_next(LexState* ls)
 					c = fgetc(ls->src);
 					if (c == EOF)
 						break;
-					if (!isLetter(c))
+					if (!IS_LETTER(c))
 					{
 						ungetc(c, ls->src);
 						break;
@@ -103,17 +104,17 @@ int lex_nextLong(LexState* ls, char c0, int defaultTok)
 {
 	int c1 = fgetc(ls->src);
 
-	switch(hash(c0, (char) c1))
+	switch(HASH(c0, (char) c1))
 	{
-		case hash('>', '>'): return TK_BIT_SR;
-		case hash('>', '='): return TK_GREATEREQUALS;
-		case hash('<', '<'): return TK_BIT_SL;
-		case hash('<', '='): return TK_LESSEQUALS;
-		case hash('=', '='): return TK_EQUALS;
-		case hash('!', '='): return TK_UNEQUALS;
-		case hash('|', '|'): return TK_OR;
-		case hash('&', '&'): return TK_AND;
-		case hash('-', '-'): return TK_COMMENT;
+		case HASH('>', '>'): return TK_BIT_SR;
+		case HASH('>', '='): return TK_GREATEREQUALS;
+		case HASH('<', '<'): return TK_BIT_SL;
+		case HASH('<', '='): return TK_LESSEQUALS;
+		case HASH('=', '='): return TK_EQUALS;
+		case HASH('!', '='): return TK_UNEQUALS;
+		case HASH('|', '|'): return TK_OR;
+		case HASH('&', '&'): return TK_AND;
+		case HASH('-', '-'): return TK_COMMENT;
 		default:
 			ungetc(c1, ls->src);
 			return defaultTok;
