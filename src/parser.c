@@ -43,7 +43,9 @@ int do_parse(char* file)
 		{
 			if (ls.kf.character > 32)
 				printf(" char: %c", ls.kf.character);
-			else
+			else if(ls.kf.character == 32) {
+				printf(" char: (space)");
+			} else
 				printf(" char: 0x%02hhX", ls.kf.character);
 		}
 		if (tok == TK_NONE)
