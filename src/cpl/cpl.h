@@ -42,7 +42,7 @@ typedef struct
 	char author[10];
 	char copyright[15];
 	uint8_t version[3];
-	CplPermissions* permissions;
+	CplPermissions permissions;
 } CplHeader;
 
 // compiler state

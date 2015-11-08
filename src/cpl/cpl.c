@@ -7,9 +7,15 @@
 
 #include "cpl.h"
 
-void cpl_init(CplState* cs, FILE* fp)
+void cpl_init(CplState* cs, CplHeader* ch, FILE* fp)
 {
 	cs->dst = fp;
+	cs->ch = *ch;
+}
+
+void cpl_write_header(CplState* cs)
+{
+
 }
 
 void cpl_write_instr(CplState* cs, int instr)
