@@ -29,6 +29,12 @@ void lex_init(LexState* ls, FILE* fp)
 	ls->last_token = TK_NONE;
 }
 
+// get the keywords' string. doesn't check for out of bounds!
+const char* lex_getKeywordString(int tok)
+{
+	return lex_keywords[tok-TOK_FIRST_KW];
+}
+
 // try to read the next token
 // if its a name, put it into kf
 int lex_next(LexState* ls)
@@ -145,10 +151,10 @@ int lex_nextWord(LexState* ls, char c0)
 	}
 
 	name[++i] = 0;
-	int j;
-	for (j=TOK_FIRST_KW; j<=TOK_LAST_KW; j++)
-		if (strlen(lex_keywords[j-TOK_FIRST_KW]) == i && strncmp(name, lex_keywords[j-TOK_FIRST_KW], i) == 0)
-			return j;
+	int kw;
+	for (kw=TOK_FIRST_KW; kw<=TOK_LAST_KW; kw++)
+		if (strncmp(name, lex_getKeywordString(kw), i) == 0)
+			return kw;
 
 	memcpy(ls->kf.name, name, i+1);
 	return TK_NAME;

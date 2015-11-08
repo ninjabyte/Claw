@@ -90,6 +90,7 @@ typedef struct
 } LexState;
 
 void lex_init(LexState* ls, FILE* fp);
+const char* lex_getKeywordString(int tok);
 int lex_next(LexState* ls);
 
 #endif /* LEX_H_ */
