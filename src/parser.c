@@ -39,6 +39,13 @@ int do_parse(char* file)
 			printf(" number: %d", ls.kf.number);
 		if (tok >= TOK_FIRST_KW && tok <= TOK_LAST_KW)
 			printf(" keyword: %s", lex_getKeywordString(tok));
+		if (tok == TK_CHARACTER)
+		{
+			if (ls.kf.character > 32)
+				printf(" char: %c", ls.kf.character);
+			else
+				printf(" char: 0x%02hhX", ls.kf.character);
+		}
 		if (tok == TK_NONE)
 			break;
 		printf("\n");

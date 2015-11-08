@@ -17,6 +17,8 @@ const char* lex_keywords[] = {
 #define HASH(c0, c1) ((c0) << 8 | (c1))
 
 int lex_nextLong(LexState* ls, char c0, int defaultTok);
+char lex_nextEscapeCode(LexState* ls);
+int lex_nextChar(LexState* ls, int c0);
 int lex_nextNumber(LexState* ls, char c0);
 int lex_nextWord(LexState* ls, char c0);
 
@@ -26,6 +28,8 @@ void lex_init(LexState* ls, FILE* fp)
 	ls->line = 0;
 	ls->src = fp;
 	ls->last_token = TK_NONE;
+	ls->in_string = 0;
+	ls->in_comment = 0;
 }
 
 // get the keywords' string. doesn't check for out of bounds!
@@ -40,14 +44,18 @@ int lex_next(LexState* ls)
 {
 	int c = fgetc(ls->src);
 
-	if(c != EOF && ((c != '"' && ls->in_string) || (c != '\n' && c != '\r' && ls->in_comment))) {
-		ls->kf.character = (char)c;
+	if (c == EOF)
+		return TK_EOI;
+
+	if(ls->in_string)
+		return lex_nextChar(ls, (char) c);
+	else if (ls->in_comment && c != '\n' && c != '\r' && c != 0 && c != EOF){		// there has to be a better way
+		ls->kf.character = (char) c;
 		return TK_CHARACTER;
 	}
 
 	switch(c) {
 		case 0:
-		case EOF:
 			return TK_EOI;
 		case '\n':	// line breaks
 		case '\r':
@@ -57,7 +65,7 @@ int lex_next(LexState* ls)
 		case ' ': case '\f': case '\t': case '\v': case ';': // whitespace
 			return TK_WHITESPACE;
 		case '"':
-			ls->in_string = !(ls->in_string);
+			ls->in_string = 1;
 			return TK_QUOTE;
 		case '+': return TK_PLUS;
 		case '-': return lex_nextLong(ls, c, TK_MINUS);	// TK_MINUS or TK_COMMENT
@@ -106,6 +114,52 @@ int lex_nextLong(LexState* ls, char c0, int defaultTok)
 		default:
 			ungetc(c1, ls->src);
 			return defaultTok;
+	}
+}
+
+// get the actual char of an escape code
+char lex_nextEscapeCode(LexState* ls)
+{
+	int c1 = fgetc(ls->src);
+	switch (c1){
+		case EOF:
+			ungetc(c1, ls->src);
+			return TK_NONE;
+		case 'a': return '\a';
+		case 'b': return '\b';
+		case 'f': return '\f';
+		case 'n': return '\n';
+		case 'r': return '\r';
+		case 't': return '\t';
+		case 'v': return '\v';
+		case '\\': return '\\';
+		case '\'': return '\'';
+		case '"': return '"';
+		case '?': return '?';
+		default: return '\\';
+	}
+}
+
+// try to parse the next char
+int lex_nextChar(LexState* ls, int c0)
+{
+	switch(c0){
+		case 0:
+		case EOF:
+			ls->kf.character = 0;
+			return TK_EOI;
+		case '"':
+			ls->in_string = 0;
+			return TK_QUOTE;
+		case '\n':
+			ls->line++;
+			return lex_nextChar(ls, fgetc(ls->src));
+		case '\\':	// escape code
+			ls->kf.character = lex_nextEscapeCode(ls);
+			return TK_CHARACTER;
+		default:
+			ls->kf.character = c0;
+			return TK_CHARACTER;
 	}
 }
 

@@ -14,50 +14,50 @@ enum Keyword
 	TK_CHARACTER,		// a character in a string
 
 	// keywords
-	TK_BREAK,			// break
-	TK_CONTINUE,		// continue (5)
+	TK_BREAK,			// break (5)
+	TK_CONTINUE,		// continue
 	TK_BLOCK,			// block
 	TK_ELSE,			// else
 	TK_ELSEIF,			// elseif
-	TK_END,				// end
-	TK_FALSE,			// false (10)
+	TK_END,				// end (10)
+	TK_FALSE,			// false
 	TK_FOR,				// for
 	TK_FUNCTON,			// function
 	TK_IF,				// if
-	TK_RETURN,			// return
-	TK_TRUE,			// true (15)
+	TK_RETURN,			// return (15)
+	TK_TRUE,			// true
 	TK_VAR,				// var
 	TK_WHILE,			// while
 
 	// key tokens
 	TK_PLUS,			// +
-	TK_MINUS,			// -
-	TK_MULTIPLY,		// * (20)
+	TK_MINUS,			// - (20)
+	TK_MULTIPLY,		// *
 	TK_DIVIDE,			// /
 	TK_MODULUS,			// %
 	TK_LESS,			// <
-	TK_GREATER,			// >
-	TK_LESSEQUALS,		// <= (25)
+	TK_GREATER,			// > (25)
+	TK_LESSEQUALS,		// <=
 	TK_GREATEREQUALS,	// >=
 	TK_EQUALS,			// ==
 	TK_UNEQUALS,		// !=
-	TK_ASSIGN,			// =
-	TK_AND,				// && (30)
+	TK_ASSIGN,			// = (30)
+	TK_AND,				// &&
 	TK_OR,				// ||
 	TK_BIT_OR,			// |
 	TK_BIT_AND,			// &
-	TK_BIT_NOT,			// !
-	TK_BIT_SL,			// << (35)
+	TK_BIT_NOT,			// ! (35)
+	TK_BIT_SL,			// <<
 	TK_BIT_SR,			// >>
 	TK_BIT_XOR,			// ^
 	TK_COMMA,			// ,
-	TK_BR_OPEN,			// (
-	TK_BR_CLOSE,		// ) (40)
+	TK_BR_OPEN,			// ( (40)
+	TK_BR_CLOSE,		// )
 	TK_CBR_OPEN,		// {
 	TK_CBR_CLOSE,		// }
 	TK_BBR_OPEN,		// [
-	TK_BBR_CLOSE,		// ]
-	TK_COMMENT,			// -- (45)
+	TK_BBR_CLOSE,		// ] (45)
+	TK_COMMENT,			// --
 	TK_NUMBER,			// 0-9
 	TK_QUOTE,			// "
 	NUM_KEYWORDS,
