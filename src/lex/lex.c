@@ -14,6 +14,7 @@ const char* lex_keywords[] = {
 
 #define IS_LETTER(chr) (((chr) >= 'A' && (chr) <= 'Z') || ((chr) >= 'a' && (chr) <= 'z') || ((chr) == '_'))
 #define IS_NUMBER(chr) ((chr) >= '0' && (chr) <= '9')
+#define IS_HEX(chr) (((chr) >= 'A' && (chr) <= 'F') || ((chr) >= 'a' && (chr) <= 'f') || ((chr) >= '0' && chr <= '9'))
 #define HASH(c0, c1) ((c0) << 8 | (c1))
 
 int lex_error(LexState* ls, uint8_t error);
@@ -21,6 +22,7 @@ int lex_error(LexState* ls, uint8_t error);
 token_t lex_nextLong(LexState*, char, token_t);
 char lex_nextEscapeCode(LexState*);
 token_t lex_nextChar(LexState*, char);
+token_t lex_nextHexNumber(LexState*, char);
 token_t lex_nextNumber(LexState*, char);
 token_t lex_nextWord(LexState*, char);
 
@@ -186,6 +188,28 @@ token_t lex_nextChar(LexState* ls, char c0)
 			ls->kf.character = c0;
 			return TK_CHARACTER;
 	}
+}
+
+// try to match an hexadecimal number
+token_t lex_nextHexNumber(LexState* ls, char c0)
+{
+	uint16_t number = 0;
+	char cx = c0;
+
+	uint8_t i;
+	for (i=0; i<7; i++) {
+		if (IS_NUMBER(cx)) {
+			number *= 10;
+			number += cx - '0';
+			cx = fgetc(ls->src);
+		} else {
+			ungetc(cx, ls->src);
+			break;
+		}
+	}
+
+	ls->kf.number = number;
+	return TK_NUMBER;
 }
 
 // try to match a number
