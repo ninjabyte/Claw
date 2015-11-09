@@ -29,7 +29,6 @@ void lex_init(LexState* ls, FILE* fp)
 {
 	ls->line = 1;
 	ls->src = fp;
-	ls->last_token = TK_NONE;
 	ls->in_string = 0;
 	ls->in_comment = 0;
 	ls->error = 0;
@@ -63,7 +62,10 @@ token_t lex_next(LexState* ls)
 	int c = fgetc(ls->src);
 
 	if (c == EOF)
+	{
+		ls->in_comment = 0;
 		return TK_EOI;
+	}
 
 	if(ls->in_string)
 		return lex_nextChar(ls, (char) c);
@@ -74,6 +76,7 @@ token_t lex_next(LexState* ls)
 
 	switch(c) {
 		case 0:
+			ls->in_comment = 0;
 			return TK_EOI;
 		case '\n':	// line breaks
 		case '\r':
@@ -237,4 +240,31 @@ token_t lex_nextWord(LexState* ls, char c0)
 			return kw;
 
 	return TK_NAME;
+}
+
+void lex_debugPrintToken(LexState* ls, token_t tok)
+{
+	switch(tok) {
+		case TK_NAME:
+			printf("name: %s", ls->kf.name);
+			break;
+		case TK_CHARACTER:
+			if (ls->kf.character > 32) {
+				printf("char: %c", ls->kf.character);
+			} else if(ls->kf.character == 32) {
+				printf("char: (space)");
+			} else
+				printf("char: 0x%02hhX", ls->kf.character);
+			break;
+		case TK_NUMBER:
+			printf("number: %d", ls->kf.number);
+			break;
+		default:
+			if(tok >= TOK_FIRST_KW && tok <= TOK_LAST_KW)
+				printf("keyword: %s", lex_getKeywordString(tok));
+			else
+				printf("token: %d", tok);
+			break;
+	}
+	printf("\n");
 }

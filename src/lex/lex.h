@@ -16,50 +16,50 @@ enum Keyword
 	TK_CHARACTER,		// a character in a string
 
 	// keywords
-	TK_ACTION,			// action
-	TK_BREAK,			// break (5)
+	TK_ACTION,			// action (5)
+	TK_BREAK,			// break
 	TK_CONTINUE,		// continue
 	TK_BLOCK,			// block
 	TK_ELSE,			// else
-	TK_ELSEIF,			// elseif
-	TK_END,				// end (10)
+	TK_ELSEIF,			// elseif (10)
+	TK_END,				// end
 	TK_FALSE,			// false
 	TK_FOR,				// for
 	TK_FUNCTON,			// function
-	TK_IF,				// if
-	TK_RETURN,			// return (15)
+	TK_IF,				// if (15)
+	TK_RETURN,			// return
 	TK_TRUE,			// true
 	TK_VAR,				// var
 	TK_WHILE,			// while
 
 	// key tokens
-	TK_PLUS,			// +
-	TK_MINUS,			// - (20)
+	TK_PLUS,			// + (20)
+	TK_MINUS,			// -
 	TK_MULTIPLY,		// *
 	TK_DIVIDE,			// /
 	TK_MODULUS,			// %
-	TK_LESS,			// <
-	TK_GREATER,			// > (25)
+	TK_LESS,			// < (25)
+	TK_GREATER,			// >
 	TK_LESSEQUALS,		// <=
 	TK_GREATEREQUALS,	// >=
 	TK_EQUALS,			// ==
-	TK_UNEQUALS,		// !=
-	TK_ASSIGN,			// = (30)
+	TK_UNEQUALS,		// != (30)
+	TK_ASSIGN,			// =
 	TK_AND,				// &&
 	TK_OR,				// ||
 	TK_BIT_OR,			// |
-	TK_BIT_AND,			// &
-	TK_BIT_NOT,			// ! (35)
+	TK_BIT_AND,			// & (35)
+	TK_BIT_NOT,			// !
 	TK_BIT_SL,			// <<
 	TK_BIT_SR,			// >>
 	TK_BIT_XOR,			// ^
-	TK_COMMA,			// ,
-	TK_BR_OPEN,			// ( (40)
+	TK_COMMA,			// , (40)
+	TK_BR_OPEN,			// (
 	TK_BR_CLOSE,		// )
 	TK_CBR_OPEN,		// {
 	TK_CBR_CLOSE,		// }
-	TK_BBR_OPEN,		// [
-	TK_BBR_CLOSE,		// ] (45)
+	TK_BBR_OPEN,		// [ (45)
+	TK_BBR_CLOSE,		// ]
 	TK_COMMENT,			// --
 	TK_NUMBER,			// 0-9
 	TK_QUOTE,			// "
@@ -85,7 +85,6 @@ typedef struct
 {
 	FILE* src;	// the source file
 	uint32_t line;	// the current line number
-	token_t last_token; // last parsed token
 	uint8_t in_comment; // is in comment
 	uint8_t in_string; // is in string
 	uint8_t error; // error code, if any
@@ -93,8 +92,8 @@ typedef struct
 } LexState;
 
 void lex_init(LexState* ls, FILE* fp);
-void lex_logError(LexState* ls);
 const char* lex_getKeywordString(token_t tok);
 token_t lex_next(LexState* ls);
+void lex_debugPrintToken(LexState* ls, token_t tok);
 
 #endif /* LEX_H_ */

@@ -17,6 +17,7 @@
 #include "rpn.h"
 #include "cpl/cpl.h"
 #include "error/error.h"
+#include "parse/parse.h"
 
 // parse code
 int do_compile(char* input_file, char* output_file, CplHeader* ch)
@@ -28,52 +29,21 @@ int do_compile(char* input_file, char* output_file, CplHeader* ch)
 	    return ERR_INVALID_FILE;
 
 	LexState ls;
+	CplState cs;
+	ParseState ps;
+
 	lex_init(&ls, ifp);
 
-	CplState cs;
 	cpl_init(&cs, ch, ofp);
-
 	cpl_write_header(&cs);
+	parse_init(&ps, &ls, &cs);
 
-	while (!feof(ifp))
-	{
-		int tok = lex_next(&ls);
-
-		if (ls.error)
-			break;
-
-		switch(tok) {
-		case TK_NAME:
-			printf("name: %s", ls.kf.name);
-			break;
-		case TK_CHARACTER:
-			if(ls.in_string)
-				cpl_write_arg8(&cs, ls.kf.character);
-
-			if (ls.kf.character > 32) {
-				printf("char: %c", ls.kf.character);
-			} else if(ls.kf.character == 32) {
-				printf("char: (space)");
-			} else
-				printf("char: 0x%02hhX", ls.kf.character);
-			break;
-		case TK_NUMBER:
-			printf("number: %d", ls.kf.number);
-			break;
-		default:
-			if(tok >= TOK_FIRST_KW && tok <= TOK_LAST_KW)
-				printf("keyword: %s", lex_getKeywordString(tok));
-			else
-				printf("token: %d", tok);
-			break;
-		}
-		printf("\n");
-	}
+	parse_parse(&ps);
 
 	fclose(ifp);
 	fclose(ofp);
 
-	lex_logError(&ls);
+	parse_logError(&ps);
 
 	return 0;
 }
