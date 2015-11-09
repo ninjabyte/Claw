@@ -156,6 +156,8 @@ char lex_nextEscapeCode(LexState* ls)
 		case '\'': return '\'';
 		case '"': return '"';
 		case '?': return '?';
+		case '\r':
+		case '\n': return ' ';
 		default: return '\\';
 	}
 }
