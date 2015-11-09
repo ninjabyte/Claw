@@ -47,7 +47,9 @@ int do_compile(char* input_file, char* output_file, CplHeader* ch)
 			printf("name: %s", ls.kf.name);
 			break;
 		case TK_CHARACTER:
-			cpl_write_arg8(&cs, ls.kf.character);
+			if(ls.in_string)
+				cpl_write_arg8(&cs, ls.kf.character);
+
 			if (ls.kf.character > 32) {
 				printf("char: %c", ls.kf.character);
 			} else if(ls.kf.character == 32) {
