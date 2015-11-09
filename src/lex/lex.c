@@ -109,6 +109,7 @@ token_t lex_next(LexState* ls)
 		case '}': return TK_CBR_CLOSE;
 		case '[': return TK_BBR_OPEN;
 		case ']': return TK_BBR_CLOSE;
+		case '#': return lex_nextHexNumber(ls);
 		case '0': case '1': case '2': case '3': case '4':
 		case '5': case '6': case '7': case '8': case '9':
 			return lex_nextNumber(ls, c);
@@ -184,9 +185,6 @@ token_t lex_nextChar(LexState* ls, char c0)
 			if(ls->kf.character == -1)
 				return lex_error(ls, ERR_INVALID_ESCAPE);
 			return TK_CHARACTER;
-		case '#': // hexadecimal number
-			ls->kf.number = lex_nextHexNumber(ls);
-			return TK_NUMBER;
 		default:
 			ls->kf.character = c0;
 			return TK_CHARACTER;
@@ -196,7 +194,8 @@ token_t lex_nextChar(LexState* ls, char c0)
 // try to match an html style hexadecimal number
 token_t lex_nextHexNumber(LexState* ls)
 {
-	uint16_t number = 0, i;
+	uint16_t number = 0;
+	uint8_t i;
 	int c;
 
 	for (i=0; i<4; i++) {
@@ -204,7 +203,11 @@ token_t lex_nextHexNumber(LexState* ls)
 
 		if (IS_HEX(c)) {
 			number = number << 4;
-			number |= c;
+
+			if(IS_NUMBER(c))
+				number |= (c - '0');
+			else
+				number |= ((c & ~(0x20)) - 'A');
 		} else {
 			ungetc(c, ls->src);
 			break;
