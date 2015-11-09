@@ -6,15 +6,17 @@
 #include "../error/error.h"
 
 const char* lex_keywords[] = {
-	"break",	"continue",	"block",	"else",
-	"elseif",	"end",		"false",	"for",
-	"function",	"action",	"if",		"return",
+	"action",	"break",	"continue",	"block",
+	"else",		"elseif",	"end",		"false",
+	"for",		"function",	"if",		"return",
 	"true",		"var", 		"while"
 };
 
 #define IS_LETTER(chr) (((chr) >= 'A' && (chr) <= 'Z') || ((chr) >= 'a' && (chr) <= 'z') || ((chr) == '_'))
 #define IS_NUMBER(chr) ((chr) >= '0' && (chr) <= '9')
 #define HASH(c0, c1) ((c0) << 8 | (c1))
+
+int lex_error(LexState* ls, uint8_t error);
 
 token_t lex_nextLong(LexState*, char, token_t);
 char lex_nextEscapeCode(LexState*);
@@ -25,17 +27,33 @@ token_t lex_nextWord(LexState*, char);
 // initialize a lexer
 void lex_init(LexState* ls, FILE* fp)
 {
-	ls->line = 0;
+	ls->line = 1;
 	ls->src = fp;
 	ls->last_token = TK_NONE;
 	ls->in_string = 0;
 	ls->in_comment = 0;
+	ls->error = 0;
 }
 
 // get the keywords' string. doesn't check for out of bounds!
 const char* lex_getKeywordString(token_t tok)
 {
 	return lex_keywords[tok-TOK_FIRST_KW];
+}
+
+// set this lexer in an error state
+int lex_error(LexState* ls, uint8_t error)
+{
+	ls->error = error;
+	return TK_NONE;
+}
+
+// log the error message
+void lex_logError(LexState* ls)
+{
+	error_printmsg(ls->error);
+	if (ls->error)
+		fprintf(stderr, "at line %d\n", ls->line);
 }
 
 // try to read the next token
@@ -91,7 +109,6 @@ token_t lex_next(LexState* ls)
 			return lex_nextNumber(ls, c);
 		default: return lex_nextWord(ls, c);
 	}
-	return TK_NONE;
 }
 
 // try to match a token of 2 chars
@@ -147,6 +164,7 @@ token_t lex_nextChar(LexState* ls, char c0)
 		case 0:
 		case EOF:
 			ls->kf.character = 0;
+			ls->error = ERR_UNEXPECTED_EOI;
 			return TK_EOI;
 		case '"':
 			ls->in_string = 0;
@@ -157,7 +175,7 @@ token_t lex_nextChar(LexState* ls, char c0)
 		case '\\':	// escape code
 			ls->kf.character = lex_nextEscapeCode(ls);
 			if(ls->kf.character == -1)
-				return TK_NONE;
+				return lex_error(ls, ERR_INVALID_ESCAPE);
 			return TK_CHARACTER;
 		default:
 			ls->kf.character = c0;
@@ -196,8 +214,8 @@ token_t lex_nextWord(LexState* ls, char c0)
 		ls->kf.name[i] = 0;
 
 	if (!IS_LETTER(cx)) {
-		ungetc(c0, ls->src);
-		return TK_NONE;
+		ungetc(cx, ls->src);
+		return lex_error(ls, ERR_UNEXPECTED_INPUT);
 	}
 
 	ls->kf.name[0] = cx;
@@ -215,7 +233,7 @@ token_t lex_nextWord(LexState* ls, char c0)
 	ls->kf.name[++i] = 0;
 	int kw;
 	for (kw=TOK_FIRST_KW; kw<=TOK_LAST_KW; kw++)
-		if (strncmp(ls->kf.name, lex_getKeywordString(kw), i) == 0)
+		if (strlen(lex_getKeywordString(kw)) == i && strncmp(ls->kf.name, lex_getKeywordString(kw), i) == 0)
 			return kw;
 
 	return TK_NAME;

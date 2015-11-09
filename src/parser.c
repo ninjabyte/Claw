@@ -39,6 +39,9 @@ int do_compile(char* input_file, char* output_file, CplHeader* ch)
 	{
 		int tok = lex_next(&ls);
 
+		if (ls.error)
+			break;
+
 		switch(tok) {
 		case TK_NAME:
 			printf("name: %s", ls.kf.name);
@@ -67,7 +70,10 @@ int do_compile(char* input_file, char* output_file, CplHeader* ch)
 
 	fclose(ifp);
 	fclose(ofp);
-	return ERR_NO_ERROR;
+
+	lex_logError(&ls);
+
+	return 0;
 }
 
 // parse code

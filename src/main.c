@@ -30,6 +30,6 @@ int main(int argc, char *argv[])
 	ch.version[VER_REVISION] = 0;
 	ch.permissions = cp;
 
-	error_printmsg(do_compile(argv[1], "a.out", &ch));
+	do_compile(argv[1], "a.out", &ch);
 	return EXIT_SUCCESS;
 }

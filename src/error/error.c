@@ -1,20 +1,21 @@
+#include <stdio.h>
 #include "error.h"
-#include "../io.h"
 
 // error messages
 const char* error_messages[] =
 {
 	"No errors occurred",
-	"Invalid file"
+	"Invalid file",
 	"Unexpected input",
 	"Unexpected end of input",
-	"Unexpected token",
-	"Out of memory",
+	"Invalid escape sequence",
 };
 
 // prints the error message of an error code
 void error_printmsg(int code)
 {
-	if (code < NUM_ERRORS && code >= ERR_NO_ERROR)
-		error(error_messages[code]);
+	if (!code)
+		fprintf(stderr, "%s\n", error_messages[0]);
+	else if (code < NUM_ERRORS && code > ERR_NO_ERROR)
+		fprintf(stderr, "Error: %s\n", error_messages[code]);
 }

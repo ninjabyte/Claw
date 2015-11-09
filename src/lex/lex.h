@@ -16,6 +16,7 @@ enum Keyword
 	TK_CHARACTER,		// a character in a string
 
 	// keywords
+	TK_ACTION,			// action
 	TK_BREAK,			// break (5)
 	TK_CONTINUE,		// continue
 	TK_BLOCK,			// block
@@ -25,7 +26,6 @@ enum Keyword
 	TK_FALSE,			// false
 	TK_FOR,				// for
 	TK_FUNCTON,			// function
-	TK_ACTION,			// action
 	TK_IF,				// if
 	TK_RETURN,			// return (15)
 	TK_TRUE,			// true
@@ -64,11 +64,11 @@ enum Keyword
 	TK_NUMBER,			// 0-9
 	TK_QUOTE,			// "
 	NUM_KEYWORDS,
-	TK_NONE = -1
+	TK_NONE = -1		// an error happened
 };
 
 // the first string kw
-#define TOK_FIRST_KW TK_BREAK
+#define TOK_FIRST_KW TK_ACTION
 // the last string kw
 #define TOK_LAST_KW	TK_WHILE
 
@@ -80,10 +80,6 @@ typedef struct
 	char character;
 } KeywordInfo;
 
-typedef struct
-{
-} KeywordBuffer;
-
 // lexer state
 typedef struct
 {
@@ -92,11 +88,12 @@ typedef struct
 	token_t last_token; // last parsed token
 	uint8_t in_comment; // is in comment
 	uint8_t in_string; // is in string
-	KeywordBuffer kb; // reserved
+	uint8_t error; // error code, if any
 	KeywordInfo kf; // detailed info about the keyword if available
 } LexState;
 
 void lex_init(LexState* ls, FILE* fp);
+void lex_logError(LexState* ls);
 const char* lex_getKeywordString(token_t tok);
 token_t lex_next(LexState* ls);
 
