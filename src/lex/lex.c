@@ -22,7 +22,7 @@ int lex_error(LexState* ls, uint8_t error);
 token_t lex_nextLong(LexState*, char, token_t);
 char lex_nextEscapeCode(LexState*);
 token_t lex_nextChar(LexState*, char);
-token_t lex_nextHexNumber(LexState*, char);
+token_t lex_nextHexNumber(LexState*);
 token_t lex_nextNumber(LexState*, char);
 token_t lex_nextWord(LexState*, char);
 
@@ -184,26 +184,29 @@ token_t lex_nextChar(LexState* ls, char c0)
 			if(ls->kf.character == -1)
 				return lex_error(ls, ERR_INVALID_ESCAPE);
 			return TK_CHARACTER;
+		case '#': // hexadecimal number
+			ls->kf.number = lex_nextHexNumber(ls);
+			return TK_NUMBER;
 		default:
 			ls->kf.character = c0;
 			return TK_CHARACTER;
 	}
 }
 
-// try to match an hexadecimal number
-token_t lex_nextHexNumber(LexState* ls, char c0)
+// try to match an html style hexadecimal number
+token_t lex_nextHexNumber(LexState* ls)
 {
-	uint16_t number = 0;
-	char cx = c0;
+	uint16_t number = 0, i;
+	int c;
 
-	uint8_t i;
-	for (i=0; i<7; i++) {
-		if (IS_NUMBER(cx)) {
-			number *= 10;
-			number += cx - '0';
-			cx = fgetc(ls->src);
+	for (i=0; i<4; i++) {
+		c = fgetc(ls->src);
+
+		if (IS_HEX(c)) {
+			number = number << 4;
+			number |= c;
 		} else {
-			ungetc(cx, ls->src);
+			ungetc(c, ls->src);
 			break;
 		}
 	}
@@ -216,7 +219,7 @@ token_t lex_nextHexNumber(LexState* ls, char c0)
 token_t lex_nextNumber(LexState* ls, char c0)
 {
 	uint16_t number = 0;
-	char cx = c0;
+	int cx = c0;
 
 	uint8_t i;
 	for (i=0; i<7; i++) {
