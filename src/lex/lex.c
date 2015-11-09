@@ -211,6 +211,11 @@ token_t lex_nextHexNumber(LexState* ls)
 		}
 	}
 
+	if(i == 0) {
+		ls->error = ERR_SYNTAX;
+		return TK_NONE;
+	}
+
 	ls->kf.number = number;
 	return TK_NUMBER;
 }
