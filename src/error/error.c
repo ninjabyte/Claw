@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "error.h"
 
-// error messages
+/* error messages */
 const char* error_messages[] =
 {
 	"No errors occurred",
@@ -12,7 +12,7 @@ const char* error_messages[] =
 	"Syntax",
 };
 
-// prints the error message of an error code
+/* prints the error message of an error code */
 void error_printmsg(int code)
 {
 	if (!code)
@@ -21,7 +21,7 @@ void error_printmsg(int code)
 		fprintf(stderr, "Error: %s\n", error_messages[code]);
 }
 
-// prints the error message of an error code, with the line the error is at.
+/* prints the error message of an error code, with the line the error is at. */
 void error_printmsgln(int code, int line)
 {
 	error_printmsg(code);

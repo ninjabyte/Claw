@@ -6,10 +6,10 @@
 
 typedef struct
 {
-	LexState* ls; // lexer state
-	CplState* cs; // compiler state
-	token_t token; // the last matched (usefull) token
-	uint8_t error; // error message, if any
+	LexState* ls; /* lexer state */
+	CplState* cs; /* compiler state */
+	token_t token; /* the last matched (usefull) token */
+	uint8_t error; /* error message, if any */
 } ParseState;
 
 void parse_init(ParseState* ps, LexState* ls, CplState* cs);

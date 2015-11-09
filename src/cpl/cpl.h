@@ -12,6 +12,7 @@
 #include <stdint.h>
 
 typedef uint8_t instr_t;
+typedef uint32_t permission_t;
 
 enum Instruction
 {
@@ -58,26 +59,24 @@ enum Version
 	VER_REVISION = 2
 };
 
-typedef struct
+enum Permissions
 {
-	uint8_t use_wifi;
-	// TODO: Add more permissions
-	// change to bitmasks?
-} CplPermissions;
+	PERM_WIFI
+};
 
 typedef struct
 {
 	char name[15];
 	char author[15];
 	uint8_t version[3];
-	CplPermissions permissions;
+	permission_t permissions;
 } CplHeader;
 
-// compiler state
+/* compiler state */
 typedef struct
 {
-	FILE* dst;	// the destination file
-	CplHeader ch; // header
+	FILE* dst;	/* the destination file */
+	CplHeader ch; /* header */
 } CplState;
 
 void cpl_init(CplState*, CplHeader*, FILE*);

@@ -14,12 +14,11 @@
 
 #include "parser.h"
 #include "lex/lex.h"
-#include "rpn.h"
 #include "cpl/cpl.h"
 #include "error/error.h"
 #include "parse/parse.h"
 
-// parse code
+/* parse code */
 int do_compile(char* input_file, char* output_file, CplHeader* ch)
 {
 	FILE* ifp = fopen(input_file, "r");
@@ -48,7 +47,7 @@ int do_compile(char* input_file, char* output_file, CplHeader* ch)
 	return 0;
 }
 
-// parse code
+/* parse code */
 int do_debug_parse(char* file)
 {
 	FILE* fp = fopen(file, "r");

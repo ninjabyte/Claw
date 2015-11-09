@@ -15,7 +15,7 @@ void parse_term(ParseState* ps);
 void parse_int(ParseState* ps);
 void parse_factor(ParseState* ps);
 
-// initializes a parser state
+/* initializes a parser state */
 void parse_init(ParseState* ps, LexState* ls, CplState* cs)
 {
 	ps->ls = ls;
@@ -34,13 +34,13 @@ void parse_logError(ParseState* ps)
 		error_printmsg(ERR_NO_ERROR);
 }
 
-// returns true if this parser is in an error state.
+/* returns true if this parser is in an error state. */
 uint8_t parse_hasError(ParseState* ps)
 {
 	return (ps->ls->error || ps->error);
 }
 
-// get the next useful token, filtering out useless tokens like whitespace, newline and comments.
+/* get the next useful token, filtering out useless tokens like whitespace, newline and comments. */
 void parse_next(ParseState* ps)
 {
 	if (parse_hasError(ps)) return;
@@ -74,7 +74,7 @@ void parse_parse(ParseState* ps)
 	parse_prog(ps);
 }
 
-// the program root node
+/* the program root node */
 void parse_prog(ParseState* ps)
 {
 	if (parse_hasError(ps)) return;
@@ -84,14 +84,14 @@ void parse_prog(ParseState* ps)
 	} while (ps->token != TK_EOI && !parse_hasError(ps));
 }
 
-//TODO move these to another file, and move leaves to another file too
+/*TODO move these to another file, and move leaves to another file too */
 
-// expression node
+/* expression node */
 void parse_expr(ParseState* ps)
 {
 	if (parse_hasError(ps)) return;
 
-	if (ps->token == TK_MINUS)	// unary minus
+	if (ps->token == TK_MINUS)	/* unary minus */
 	{
 		parse_next(ps);
 		parse_term(ps);
@@ -111,7 +111,7 @@ void parse_expr(ParseState* ps)
 	}
 }
 
-// terminator node
+/* terminator node */
 void parse_term(ParseState* ps)
 {
 	if (parse_hasError(ps)) return;
@@ -129,7 +129,7 @@ void parse_term(ParseState* ps)
 	}
 }
 
-// factor node
+/* factor node */
 void parse_factor(ParseState* ps)
 {
 	if (parse_hasError(ps)) return;
@@ -145,7 +145,7 @@ void parse_factor(ParseState* ps)
 		ps->error = ERR_SYNTAX;
 }
 
-// integer leaf
+/* integer leaf */
 void parse_int(ParseState* ps)
 {
 	if (parse_hasError(ps))

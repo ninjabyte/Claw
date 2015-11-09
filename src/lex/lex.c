@@ -17,16 +17,15 @@ const char* lex_keywords[] = {
 #define IS_HEX(chr) (((chr) >= 'A' && (chr) <= 'F') || ((chr) >= 'a' && (chr) <= 'f') || ((chr) >= '0' && chr <= '9'))
 #define HASH(c0, c1) ((c0) << 8 | (c1))
 
-int lex_error(LexState* ls, uint8_t error);
+int lex_error(LexState *, uint8_t);
+token_t lex_nextLong(LexState *, char, token_t);
+char lex_nextEscapeCode(LexState *);
+token_t lex_nextChar(LexState *, char);
+token_t lex_nextHexNumber(LexState *);
+token_t lex_nextNumber(LexState *, char);
+token_t lex_nextWord(LexState *, char);
 
-token_t lex_nextLong(LexState*, char, token_t);
-char lex_nextEscapeCode(LexState*);
-token_t lex_nextChar(LexState*, char);
-token_t lex_nextHexNumber(LexState*);
-token_t lex_nextNumber(LexState*, char);
-token_t lex_nextWord(LexState*, char);
-
-// initialize a lexer
+/* initialize a lexer */
 void lex_init(LexState* ls, FILE* fp)
 {
 	ls->line = 1;
@@ -36,20 +35,20 @@ void lex_init(LexState* ls, FILE* fp)
 	ls->error = 0;
 }
 
-// get the keywords' string. doesn't check for out of bounds!
+/* get the keywords' string. doesn't check for out of bounds! */
 const char* lex_getKeywordString(token_t tok)
 {
 	return lex_keywords[tok-TOK_FIRST_KW];
 }
 
-// set this lexer in an error state
+/* set this lexer in an error state */
 int lex_error(LexState* ls, uint8_t error)
 {
 	ls->error = error;
 	return TK_NONE;
 }
 
-// log the error message
+/* log the error message */
 void lex_logError(LexState* ls)
 {
 	error_printmsg(ls->error);
@@ -57,8 +56,8 @@ void lex_logError(LexState* ls)
 		fprintf(stderr, "at line %d\n", ls->line);
 }
 
-// try to read the next token
-// if its a name, put it into kf
+/* try to read the next token
+ * if its a name, put it into kf */
 token_t lex_next(LexState* ls)
 {
 	int c = fgetc(ls->src);
@@ -71,7 +70,7 @@ token_t lex_next(LexState* ls)
 
 	if(ls->in_string)
 		return lex_nextChar(ls, (char) c);
-	else if (ls->in_comment && c != '\n' && c != '\r' && c != 0 && c != EOF){		// there has to be a better way
+	else if (ls->in_comment && c != '\n' && c != '\r' && c != 0 && c != EOF){		/* there has to be a better way */
 		ls->kf.character = (char) c;
 		return TK_CHARACTER;
 	}
@@ -80,27 +79,27 @@ token_t lex_next(LexState* ls)
 		case 0:
 			ls->in_comment = 0;
 			return TK_EOI;
-		case '\n':	// line breaks
+		case '\n':	/* line breaks */
 		case '\r':
 			ls->line++;
 			ls->in_comment = 0;
 			return TK_NEWLINE;
-		case ' ': case '\f': case '\t': case '\v': case ';': // whitespace
+		case ' ': case '\f': case '\t': case '\v': case ';': /* whitespace */
 			return TK_WHITESPACE;
 		case '"':
 			ls->in_string = 1;
 			return TK_QUOTE;
 		case '+': return TK_PLUS;
-		case '-': return lex_nextLong(ls, c, TK_MINUS);	// TK_MINUS or TK_COMMENT
+		case '-': return lex_nextLong(ls, c, TK_MINUS);	/* TK_MINUS or TK_COMMENT */
 		case '*': return TK_MULTIPLY;
 		case '/': return TK_DIVIDE;
 		case '%': return TK_MODULUS;
-		case '<': return lex_nextLong(ls, c, TK_LESS);		// TK_LESS, TK_LESSEQUALS or TK_BIT_SL
-		case '>': return lex_nextLong(ls, c, TK_GREATER);	// TK_GREATER, TK_GREATEREQUALS or TK_BIT_SR
-		case '=': return lex_nextLong(ls, c, TK_ASSIGN);	// TK_ASSIGN or TK_EQUALS
-		case '!': return lex_nextLong(ls, c, TK_BIT_NOT);	// TK_BIT_NOT or TK_UNEQUALS
-		case '&': return lex_nextLong(ls, c, TK_AND);	// TK_AND or TK_BIT_AND
-		case '|': return lex_nextLong(ls, c, TK_OR);	// TK_OR or TK_BIT_OR
+		case '<': return lex_nextLong(ls, c, TK_LESS);		/* TK_LESS, TK_LESSEQUALS or TK_BIT_SL */
+		case '>': return lex_nextLong(ls, c, TK_GREATER);	/* TK_GREATER, TK_GREATEREQUALS or TK_BIT_SR */
+		case '=': return lex_nextLong(ls, c, TK_ASSIGN);	/* TK_ASSIGN or TK_EQUALS */
+		case '!': return lex_nextLong(ls, c, TK_BIT_NOT);	/* TK_BIT_NOT or TK_UNEQUALS */
+		case '&': return lex_nextLong(ls, c, TK_AND);	/* TK_AND or TK_BIT_AND */
+		case '|': return lex_nextLong(ls, c, TK_OR);	/* TK_OR or TK_BIT_OR */
 		case '^': return TK_BIT_XOR;
 		case ',': return TK_COMMA;
 		case '(': return TK_BR_OPEN;
@@ -117,7 +116,7 @@ token_t lex_next(LexState* ls)
 	}
 }
 
-// try to match a token of 2 chars
+/* try to match a token of 2 chars */
 token_t lex_nextLong(LexState* ls, char c0, token_t defaultTok)
 {
 	int c1 = fgetc(ls->src);
@@ -140,7 +139,7 @@ token_t lex_nextLong(LexState* ls, char c0, token_t defaultTok)
 	}
 }
 
-// get the actual char of an escape code
+/* get the actual char of an escape code */
 char lex_nextEscapeCode(LexState* ls)
 {
 	int c1 = fgetc(ls->src);
@@ -165,7 +164,7 @@ char lex_nextEscapeCode(LexState* ls)
 	}
 }
 
-// try to parse the next char
+/* try to parse the next char */
 token_t lex_nextChar(LexState* ls, char c0)
 {
 	switch(c0){
@@ -180,7 +179,7 @@ token_t lex_nextChar(LexState* ls, char c0)
 		case '\n':
 			ls->line++;
 			return lex_nextChar(ls, fgetc(ls->src));
-		case '\\':	// escape code
+		case '\\':	/* escape code */
 			ls->kf.character = lex_nextEscapeCode(ls);
 			if(ls->kf.character == -1)
 				return lex_error(ls, ERR_INVALID_ESCAPE);
@@ -191,7 +190,7 @@ token_t lex_nextChar(LexState* ls, char c0)
 	}
 }
 
-// try to match an html style hexadecimal number
+/* try to match a hexadecimal number */
 token_t lex_nextHexNumber(LexState* ls)
 {
 	uint16_t number = 0;
@@ -223,7 +222,7 @@ token_t lex_nextHexNumber(LexState* ls)
 	return TK_NUMBER;
 }
 
-// try to match a number
+/* try to match a number */
 token_t lex_nextNumber(LexState* ls, char c0)
 {
 	uint16_t number = 0;
@@ -245,12 +244,12 @@ token_t lex_nextNumber(LexState* ls, char c0)
 	return TK_NUMBER;
 }
 
-// try to match the next word. Returns a keyword if the next word is a keyword
+/* try to match the next word. Returns a keyword if the next word is a keyword */
 token_t lex_nextWord(LexState* ls, char c0)
 {
-	int cx = c0;
+	int cx = c0, i;
 
-	for(int i=0; i<17; i++)
+	for(i=0; i<17; i++)
 		ls->kf.name[i] = 0;
 
 	if (!IS_LETTER(cx)) {
@@ -259,7 +258,7 @@ token_t lex_nextWord(LexState* ls, char c0)
 	}
 
 	ls->kf.name[0] = cx;
-	uint8_t i;
+
 	for (i=1; i<16; i++) {
 		cx = fgetc(ls->src);
 		if (!(IS_LETTER(cx) || IS_NUMBER(cx)) || cx == EOF) {

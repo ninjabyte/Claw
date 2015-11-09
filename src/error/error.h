@@ -1,7 +1,7 @@
 #ifndef ERROR_H_
 #define ERROR_H_
 
-// error code enum
+/* error code enum */
 enum Error
 {
 	ERR_NO_ERROR,
