@@ -43,7 +43,7 @@ enum Keyword
 	TK_LESSEQUALS,		/* <= */
 	TK_GREATEREQUALS,	/* >= */
 	TK_EQUALS,			/* == */
-	TK_UNEQUALS,		/* != (30) */
+	TK_INEQUALS,		/* != (30) */
 	TK_ASSIGN,			/* = */
 	TK_AND,				/* && */
 	TK_OR,				/* || */

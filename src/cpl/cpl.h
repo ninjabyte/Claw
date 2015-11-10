@@ -50,6 +50,8 @@ enum Instruction
 
 	IN_INC	= 0x2B,
 	IN_DEC	= 0x2C,
+
+	NUM_INSTRUCTIONS
 };
 
 enum Version

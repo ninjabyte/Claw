@@ -127,7 +127,7 @@ token_t lex_nextLong(LexState* ls, char c0, token_t defaultTok)
 		case HASH('<', '<'): return TK_BIT_SL;
 		case HASH('<', '='): return TK_LESSEQUALS;
 		case HASH('=', '='): return TK_EQUALS;
-		case HASH('!', '='): return TK_UNEQUALS;
+		case HASH('!', '='): return TK_INEQUALS;
 		case HASH('|', '|'): return TK_OR;
 		case HASH('&', '&'): return TK_AND;
 		case HASH('-', '-'):

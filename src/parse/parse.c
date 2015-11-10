@@ -4,7 +4,6 @@
 #include "../error/error.h"
 #include "../lex/lex.h"
 #include "../cpl/cpl.h"
-#include "leaf.h"
 #include "expr.h"
 
 /* initializes a parser state */
