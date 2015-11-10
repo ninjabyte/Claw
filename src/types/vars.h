@@ -17,7 +17,8 @@ typedef uint8_t vartype_t;
 enum
 {
 	VARTYPE_NUMBER,
-	VARTYPE_ARRAY
+	VARTYPE_ARRAY,
+	VARTYPE_NONE
 } VarType;
 
 typedef struct
@@ -37,6 +38,7 @@ typedef struct
 {
 	char* name;
 	arg_proto_t** prototype;
+	vartype_t type;
 } function_t;
 
 #endif /* TYPES_VARS_H_ */
