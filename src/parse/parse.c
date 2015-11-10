@@ -4,16 +4,8 @@
 #include "../error/error.h"
 #include "../lex/lex.h"
 #include "../cpl/cpl.h"
-
-void parse_next(ParseState* ps);
-uint8_t parse_accept(ParseState* ps, token_t tok);
-uint8_t parse_expect(ParseState* ps, token_t tok);
-
-void parse_prog(ParseState* ps);
-void parse_expr(ParseState* ps);
-void parse_term(ParseState* ps);
-void parse_int(ParseState* ps);
-void parse_factor(ParseState* ps);
+#include "leaf.h"
+#include "expr.h"
 
 /* initializes a parser state */
 void parse_init(ParseState* ps, LexState* ls, CplState* cs)
@@ -69,11 +61,6 @@ uint8_t parse_expect(ParseState* ps, token_t tok)
 	return 0;
 }
 
-void parse_parse(ParseState* ps)
-{
-	parse_prog(ps);
-}
-
 /* the program root node */
 void parse_prog(ParseState* ps)
 {
@@ -82,74 +69,4 @@ void parse_prog(ParseState* ps)
 		parse_next(ps);
 		parse_expr(ps);
 	} while (ps->token != TK_EOI && !parse_hasError(ps));
-}
-
-/*TODO move these to another file, and move leaves to another file too */
-
-/* expression node */
-void parse_expr(ParseState* ps)
-{
-	if (parse_hasError(ps)) return;
-
-	if (ps->token == TK_MINUS)	/* unary minus */
-	{
-		parse_next(ps);
-		parse_term(ps);
-		printf("(-)");
-	}else
-		parse_term(ps);
-
-	while((ps->token == TK_PLUS || ps->token == TK_MINUS) && !parse_hasError(ps)) {
-		token_t t = ps->token;
-		parse_next(ps);
-		parse_term(ps);
-
-		if (t == TK_PLUS)
-			printf("+");
-		if (t == TK_MINUS)
-			printf("-");
-	}
-}
-
-/* terminator node */
-void parse_term(ParseState* ps)
-{
-	if (parse_hasError(ps)) return;
-
-	parse_factor(ps);
-	while ((ps->token == TK_MULTIPLY || ps->token == TK_DIVIDE) && !parse_hasError(ps)) {
-		token_t t = ps->token;
-		parse_next(ps);
-		parse_factor(ps);
-
-		if (t == TK_MULTIPLY)
-			printf("*");
-		if (t == TK_DIVIDE)
-			printf("/");
-	}
-}
-
-/* factor node */
-void parse_factor(ParseState* ps)
-{
-	if (parse_hasError(ps)) return;
-
-	if (parse_accept(ps, TK_NUMBER))
-		parse_int(ps);
-	else if (parse_accept(ps, TK_BR_OPEN))
-	{
-		parse_expr(ps);
-		parse_expect(ps, TK_BR_CLOSE);
-	}
-	else
-		ps->error = ERR_SYNTAX;
-}
-
-/* integer leaf */
-void parse_int(ParseState* ps)
-{
-	if (parse_hasError(ps))
-		return;
-
-	printf("%d", ps->ls->kf.number);
 }

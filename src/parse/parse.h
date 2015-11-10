@@ -13,7 +13,13 @@ typedef struct
 } ParseState;
 
 void parse_init(ParseState* ps, LexState* ls, CplState* cs);
-void parse_parse(ParseState* ps);
 void parse_logError(ParseState* ps);
+uint8_t parse_hasError(ParseState* ps);
+
+void parse_next(ParseState* ps);
+uint8_t parse_accept(ParseState* ps, token_t tok);
+uint8_t parse_expect(ParseState* ps, token_t tok);
+
+void parse_prog(ParseState* ps);
 
 #endif /* PARSE_H_ */

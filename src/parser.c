@@ -37,7 +37,7 @@ int do_compile(char* input_file, char* output_file, CplHeader* ch)
 	cpl_write_header(&cs);
 	parse_init(&ps, &ls, &cs);
 
-	parse_parse(&ps);
+	parse_prog(&ps);
 
 	fclose(ifp);
 	fclose(ofp);
