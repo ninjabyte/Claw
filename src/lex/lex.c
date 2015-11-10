@@ -97,10 +97,11 @@ token_t lex_next(LexState* ls)
 		case '<': return lex_nextLong(ls, c, TK_LESS);		/* TK_LESS, TK_LESSEQUALS or TK_BIT_SL */
 		case '>': return lex_nextLong(ls, c, TK_GREATER);	/* TK_GREATER, TK_GREATEREQUALS or TK_BIT_SR */
 		case '=': return lex_nextLong(ls, c, TK_ASSIGN);	/* TK_ASSIGN or TK_EQUALS */
-		case '!': return lex_nextLong(ls, c, TK_BIT_NOT);	/* TK_BIT_NOT or TK_UNEQUALS */
+		case '!': return lex_nextLong(ls, c, TK_NOT);	/* TK_BIT_NOT or TK_UNEQUALS */
 		case '&': return lex_nextLong(ls, c, TK_AND);	/* TK_AND or TK_BIT_AND */
 		case '|': return lex_nextLong(ls, c, TK_OR);	/* TK_OR or TK_BIT_OR */
 		case '^': return TK_BIT_XOR;
+		case '~': return TK_BIT_NOT;
 		case ',': return TK_COMMA;
 		case '(': return TK_BR_OPEN;
 		case ')': return TK_BR_CLOSE;

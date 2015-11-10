@@ -18,6 +18,7 @@ operator_t parseutil_getOperator(token_t token)
 		case TK_INEQUALS: return OP_INEQUALS;
 		case TK_AND: return OP_AND;
 		case TK_OR: return OP_OR;
+		case TK_NOT: return OP_UNARY_NOT;
 		case TK_BIT_OR: return OP_BIT_OR;
 		case TK_BIT_AND: return OP_BIT_AND;
 		case TK_BIT_NOT: return OP_UNARY_BIT_NOT;

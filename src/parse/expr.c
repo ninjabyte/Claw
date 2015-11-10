@@ -12,7 +12,82 @@ void parse_expr(ParseState* ps)
 {
 	if (parse_hasError(ps)) return;
 
+	parse_logical_or(ps);
+}
+
+/* logical or node: || */
+void parse_logical_or(ParseState* ps)
+{
+	if (parse_hasError(ps)) return;
+
+	parse_xor(ps);
+	while (!parse_hasError(ps)) {
+		if (parse_accept(ps, TK_OR)) {
+			parse_xor(ps);
+			leaf_operator(OP_OR);
+		} else
+			break;
+	}
+}
+
+/* logical and node: && */
+void parse_logical_and(ParseState* ps)
+{
+	if (parse_hasError(ps)) return;
+
+	parse_xor(ps);
+	while (!parse_hasError(ps)) {
+		if (parse_accept(ps, TK_AND)) {
+			parse_xor(ps);
+			leaf_operator(OP_AND);
+		} else
+			break;
+	}
+}
+
+/* or node: | */
+void parse_or(ParseState* ps)
+{
+	if (parse_hasError(ps)) return;
+
+	parse_xor(ps);
+	while (!parse_hasError(ps)) {
+		if (parse_accept(ps, TK_BIT_OR)) {
+			parse_xor(ps);
+			leaf_operator(OP_BIT_OR);
+		} else
+			break;
+	}
+}
+
+/* xor node: ^ */
+void parse_xor(ParseState* ps)
+{
+	if (parse_hasError(ps)) return;
+
+	parse_and(ps);
+	while (!parse_hasError(ps)) {
+		if (parse_accept(ps, TK_BIT_XOR)) {
+			parse_and(ps);
+			leaf_operator(OP_BIT_XOR);
+		} else
+			break;
+	}
+}
+
+/* and node: & */
+void parse_and(ParseState* ps)
+{
+	if (parse_hasError(ps)) return;
+
 	parse_equilisator(ps);
+	while (!parse_hasError(ps)) {
+		if (parse_accept(ps, TK_BIT_AND)) {
+			parse_equilisator(ps);
+			leaf_operator(OP_BIT_AND);
+		} else
+			break;
+	}
 }
 
 /* equilisator node: == and != */
@@ -124,6 +199,9 @@ void parse_unary(ParseState* ps)
 	} else if (parse_accept(ps, TK_BIT_NOT)) { /* unary not */
 		parse_factor(ps);
 		leaf_operator(OP_UNARY_BIT_NOT);
+	} else if (parse_accept(ps, TK_NOT)) { /* unary not */
+		parse_factor(ps);
+		leaf_operator(OP_UNARY_NOT);
 	} else
 		parse_factor(ps);
 }
@@ -189,14 +267,17 @@ void leaf_operator(operator_t operator)
 		case OP_OR:				/* || */
 			printf("(||)");
 			break;
+		case OP_UNARY_NOT:		/* ! */
+			printf("(||)");
+			break;
 		case OP_BIT_OR:			/* | */
 			printf("|");
 			break;
 		case OP_BIT_AND:		/* & */
 			printf("&");
 			break;
-		case OP_UNARY_BIT_NOT:	/* ! */
-			printf("(!)");
+		case OP_UNARY_BIT_NOT:	/* ~ */
+			printf("(~)");
 			break;
 		case OP_BIT_SL:			/* << */
 			printf("<<");

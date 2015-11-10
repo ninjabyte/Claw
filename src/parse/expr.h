@@ -20,9 +20,10 @@ enum Operator
 	OP_INEQUALS,		/* != */
 	OP_AND,				/* && */
 	OP_OR,				/* || */
+	OP_UNARY_NOT,		/* ! */
 	OP_BIT_OR,			/* | */
 	OP_BIT_AND,			/* & */
-	OP_UNARY_BIT_NOT,	/* ! */
+	OP_UNARY_BIT_NOT,	/* ~ */
 	OP_BIT_SL,			/* << */
 	OP_BIT_SR,			/* >> */
 	OP_BIT_XOR,			/* ^ */
@@ -33,6 +34,11 @@ enum Operator
 typedef uint8_t operator_t;
 
 void parse_expr(ParseState* ps);
+void parse_logical_or(ParseState* ps);
+void parse_logical_and(ParseState* ps);
+void parse_or(ParseState* ps);
+void parse_xor(ParseState* ps);
+void parse_and(ParseState* ps);
 void parse_equilisator(ParseState* ps);
 void parse_comparators(ParseState* ps);
 void parse_shift(ParseState* ps);

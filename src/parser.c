@@ -25,7 +25,10 @@ int do_compile(char* input_file, char* output_file, CplHeader* ch)
 	FILE* ofp = fopen(output_file, "w");
 
 	if(!ifp || !ofp)
-	    return ERR_INVALID_FILE;
+	{
+		error_printmsg(ERR_INVALID_FILE);
+	    return 1;
+	}
 
 	LexState ls;
 	CplState cs;

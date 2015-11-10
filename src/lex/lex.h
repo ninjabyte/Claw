@@ -47,12 +47,13 @@ enum Keyword
 	TK_ASSIGN,			/* = */
 	TK_AND,				/* && */
 	TK_OR,				/* || */
+	TK_NOT,				/* ! */
 	TK_BIT_OR,			/* | */
 	TK_BIT_AND,			/* & (35) */
-	TK_BIT_NOT,			/* ! */
 	TK_BIT_SL,			/* << */
 	TK_BIT_SR,			/* >> */
 	TK_BIT_XOR,			/* ^ */
+	TK_BIT_NOT,			/* ~ */
 	TK_COMMA,			/* , (40) */
 	TK_BR_OPEN,			/* ( */
 	TK_BR_CLOSE,		/* ) */
