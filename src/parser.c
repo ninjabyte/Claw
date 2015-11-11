@@ -42,6 +42,8 @@ int do_compile(char* input_file, char* output_file, CplHeader* ch)
 
 	parse_prog(&ps);
 
+	lex_destroy(&ls);
+
 	fclose(ifp);
 	fclose(ofp);
 

@@ -93,6 +93,7 @@ typedef struct
 } LexState;
 
 void lex_init(LexState* ls, FILE* fp);
+void lex_destroy(LexState* ls);
 const char* lex_getKeywordString(token_t tok);
 token_t lex_next(LexState* ls);
 void lex_debugPrintToken(LexState* ls, token_t tok);

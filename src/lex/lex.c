@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#include <malloc.h>
 #include "lex.h"
 #include "../error/error.h"
 
@@ -33,6 +34,14 @@ void lex_init(LexState* ls, FILE* fp)
 	ls->in_string = 0;
 	ls->in_comment = 0;
 	ls->error = 0;
+//	ls->kf.name = 0;
+}
+
+// destroy this lexer
+void lex_destroy(LexState* ls)
+{
+//	if (ls->kf.name)
+//		free(ls->kf.name);
 }
 
 /* get the keywords' string. doesn't check for out of bounds! */
@@ -252,6 +261,9 @@ token_t lex_nextWord(LexState* ls, char c0)
 
 	for(i=0; i<17; i++)
 		ls->kf.name[i] = 0;
+
+//	if (ls->kf.name)
+	//	free(ls->kf.name);
 
 	if (!IS_LETTER(cx)) {
 		ungetc(cx, ls->src);
