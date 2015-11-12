@@ -34,6 +34,7 @@ enum Operator
 typedef uint8_t operator_t;
 
 void parse_expr(ParseState* ps);
+void parse_assign(ParseState* ps);
 void parse_logical_or(ParseState* ps);
 void parse_logical_and(ParseState* ps);
 void parse_or(ParseState* ps);
@@ -49,6 +50,7 @@ void parse_factor(ParseState* ps);
 
 void leaf_int(uint16_t number);
 void leaf_call(char* name);
+void leaf_assign(char* name);
 void leaf_var(char* name);
 void leaf_operator(operator_t operator);
 

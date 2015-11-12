@@ -247,6 +247,12 @@ void leaf_call(char* name)
 	printf("Call %s\n", name);
 }
 
+//TODO assign leaf
+void leaf_assign(char* name)
+{
+	printf("Assgn %s\n", name);
+}
+
 void leaf_var(char* name)
 {
 	printf("Var: %s\n", name);

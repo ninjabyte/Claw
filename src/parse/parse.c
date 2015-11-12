@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <malloc.h>
 #include "parse.h"
 #include "../error/error.h"
 #include "../lex/lex.h"
@@ -69,13 +70,16 @@ void parse_prog(ParseState* ps)
 	if (parse_hasError(ps)) return;
 	do {
 		parse_next(ps);
-		parse_expr(ps);
+		parse_statement(ps);
 	} while (ps->token != TK_EOI && !parse_hasError(ps));
 }
 
 // statement node.
 void parse_statement(ParseState* ps)
 {
+	if (parse_hasError(ps)) return;
+
+	parse_expr(ps);
 	//TODO assignment
 	//TODO functioncall
 	//TODO functiondef
