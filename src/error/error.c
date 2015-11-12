@@ -10,6 +10,7 @@ const char* error_messages[] =
 	"Unexpected end of input",
 	"Invalid escape sequence",
 	"Syntax",
+	"Out of memory.",
 };
 
 /* prints the error message of an error code */

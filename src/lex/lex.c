@@ -6,6 +6,8 @@
 #include "lex.h"
 #include "../error/error.h"
 
+#define NAME_SIZE_INIT 8
+
 const char* lex_keywords[] = {
 	"action",	"break",	"continue",	"block",
 	"else",		"elseif",	"end",		"false",
@@ -34,14 +36,18 @@ void lex_init(LexState* ls, FILE* fp)
 	ls->in_string = 0;
 	ls->in_comment = 0;
 	ls->error = 0;
-//	ls->kf.name = 0;
+	ls->kf.name = 0;
+	ls->kf.name_size = 0;
 }
 
 // destroy this lexer
 void lex_destroy(LexState* ls)
 {
-//	if (ls->kf.name)
-//		free(ls->kf.name);
+	if (ls->kf.name)
+	{
+		free(ls->kf.name);
+		ls->kf.name_size = 0;
+	}
 }
 
 /* get the keywords' string. doesn't check for out of bounds! */
@@ -257,32 +263,34 @@ token_t lex_nextNumber(LexState* ls, char c0)
 /* try to match the next word. Returns a keyword if the next word is a keyword */
 token_t lex_nextWord(LexState* ls, char c0)
 {
-	int cx = c0, i;
-
-	for(i=0; i<17; i++)
-		ls->kf.name[i] = 0;
-
-//	if (ls->kf.name)
-	//	free(ls->kf.name);
+	int cx = c0, i = 0;
 
 	if (!IS_LETTER(cx)) {
 		ungetc(cx, ls->src);
 		return lex_error(ls, ERR_UNEXPECTED_INPUT);
 	}
 
-	ls->kf.name[0] = cx;
+	ls->kf.name = (char*) (ls->kf.name ? realloc(ls->kf.name, NAME_SIZE_INIT) : malloc(NAME_SIZE_INIT));
 
-	for (i=1; i<16; i++) {
-		cx = fgetc(ls->src);
-		if (!(IS_LETTER(cx) || IS_NUMBER(cx)) || cx == EOF) {
-			ungetc(cx, ls->src);
-			i--;
-			break;
-		}
-		ls->kf.name[i] = cx;
+	if (!ls->kf.name) {
+		ls->error = ERR_OUT_OF_MEMORY;
+		ls->kf.name_size = 0;
+		return TK_NONE;
 	}
 
-	ls->kf.name[++i] = 0;
+	ls->kf.name_size = NAME_SIZE_INIT;
+
+	do {
+		ls->kf.name[i++] = cx;
+		if (i >= ls->kf.name_size)
+		{
+			ls->kf.name = (char*)realloc(ls->kf.name, i+1);
+			ls->kf.name_size = i+1;
+		}
+		cx = fgetc(ls->src);
+	} while (cx != EOF && (IS_LETTER(cx) || IS_NUMBER(cx)));
+	ungetc(cx, ls->src);
+	ls->kf.name[i] = 0;
 	int kw;
 	for (kw=TOK_FIRST_KW; kw<=TOK_LAST_KW; kw++)
 		if (strlen(lex_getKeywordString(kw)) == i && strncmp(ls->kf.name, lex_getKeywordString(kw), i) == 0)

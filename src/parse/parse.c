@@ -6,6 +6,8 @@
 #include "../cpl/cpl.h"
 #include "expr.h"
 
+void parse_statement(ParseState* ps);
+
 /* initializes a parser state */
 void parse_init(ParseState* ps, LexState* ls, CplState* cs)
 {
@@ -38,6 +40,7 @@ void parse_next(ParseState* ps)
 	token_t tok = TK_NONE;
 	do {
 		tok = lex_next(ps->ls);
+		//lex_debugPrintToken(ps->ls, tok);
 	} while (ps->ls->in_comment || tok == TK_WHITESPACE || tok == TK_NEWLINE);
 	ps->token = tok;
 }
@@ -68,4 +71,15 @@ void parse_prog(ParseState* ps)
 		parse_next(ps);
 		parse_expr(ps);
 	} while (ps->token != TK_EOI && !parse_hasError(ps));
+}
+
+// statement node.
+void parse_statement(ParseState* ps)
+{
+	//TODO assignment
+	//TODO functioncall
+	//TODO functiondef
+	//TODO whileloop
+	//TODO forloop
+	//TODO ifstat
 }

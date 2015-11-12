@@ -48,22 +48,22 @@ enum Keyword
 	TK_AND,				/* && */
 	TK_OR,				/* || */
 	TK_NOT,				/* ! */
-	TK_BIT_OR,			/* | */
-	TK_BIT_AND,			/* & (35) */
+	TK_BIT_OR,			/* | (35) */
+	TK_BIT_AND,			/* & */
 	TK_BIT_SL,			/* << */
 	TK_BIT_SR,			/* >> */
 	TK_BIT_XOR,			/* ^ */
-	TK_BIT_NOT,			/* ~ */
-	TK_COMMA,			/* , (40) */
+	TK_BIT_NOT,			/* ~ (40) */
+	TK_COMMA,			/* , */
 	TK_BR_OPEN,			/* ( */
 	TK_BR_CLOSE,		/* ) */
 	TK_CBR_OPEN,		/* { */
-	TK_CBR_CLOSE,		/* } */
-	TK_BBR_OPEN,		/* [ (45) */
+	TK_CBR_CLOSE,		/* } (45) */
+	TK_BBR_OPEN,		/* [ */
 	TK_BBR_CLOSE,		/* ] */
 	TK_COMMENT,			/* -- */
 	TK_NUMBER,			/* 0-9 */
-	TK_QUOTE,			/* " */
+	TK_QUOTE,			/* " (50)*/
 	NUM_KEYWORDS,
 	TK_NONE = -1		/* an error happened */
 };
@@ -76,7 +76,8 @@ enum Keyword
 /* to store additional info about the keyword */
 typedef struct
 {
-	char name[17];
+	char* name;
+	size_t name_size;
 	uint16_t number;
 	char character;
 } KeywordInfo;

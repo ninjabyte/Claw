@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <malloc.h>
+#include <string.h>
 #include "expr.h"
 #include "parse.h"
 #include "../error/error.h"
 #include "../lex/lex.h"
-#include "../cpl/cpl.h"
 #include "parseutil.h"
 
 /* expression node */
@@ -214,6 +215,25 @@ void parse_factor(ParseState* ps)
 	if (ps->token == TK_NUMBER) {
 		leaf_int(ps->ls->kf.number);
 		parse_next(ps);
+	} else if (ps->token == TK_NAME) {
+		char* name = (char*) malloc(ps->ls->kf.name_size); // save variable name
+		if (!name) {
+			ps->error = ERR_OUT_OF_MEMORY;
+			return;
+		}
+		memcpy(name, ps->ls->kf.name, ps->ls->kf.name_size);
+		parse_next(ps);
+		if (parse_accept(ps, TK_BR_OPEN)) {
+			while (!parse_hasError(ps) && !parse_accept(ps, TK_BR_CLOSE)) {
+				parse_expr(ps);
+				if (parse_accept(ps, TK_COMMA))
+					parse_expr(ps);
+			}
+			leaf_call(name);
+		} else {
+			leaf_var(name);
+		}
+		free(name);
 	} else if (parse_accept(ps, TK_BR_OPEN)) {
 		parse_expr(ps);
 		parse_expect(ps, TK_BR_CLOSE);
@@ -221,9 +241,27 @@ void parse_factor(ParseState* ps)
 		ps->error = ERR_SYNTAX;
 }
 
+//TODO function call leaf
+void leaf_call(char* name)
+{
+	printf("Call %s\n", name);
+}
+
+void leaf_var(char* name)
+{
+	printf("Var: %s\n", name);
+}
+
+/* integer leaf */
+void leaf_int(uint16_t number)
+{
+	printf("Int: %d\n", number);
+}
+
 /* operator leaf */
 void leaf_operator(operator_t operator)
 {
+	printf("Operator: ");
 	switch(operator) {
 		case OP_UNARY_MINUS:	/* - */
 			printf("(-)");
@@ -289,10 +327,5 @@ void leaf_operator(operator_t operator)
 			printf("^");
 			break;
 	}
-}
-
-/* integer leaf */
-void leaf_int(uint16_t number)
-{
-	printf("%d", number);
+	printf("\n");
 }

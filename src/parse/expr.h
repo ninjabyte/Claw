@@ -47,7 +47,9 @@ void parse_multdivmod(ParseState* ps);
 void parse_unary(ParseState* ps);
 void parse_factor(ParseState* ps);
 
-void leaf_operator(operator_t operator);
 void leaf_int(uint16_t number);
+void leaf_call(char* name);
+void leaf_var(char* name);
+void leaf_operator(operator_t operator);
 
 #endif /* EXPR_H_ */
