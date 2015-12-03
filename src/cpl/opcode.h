@@ -1,9 +1,16 @@
-#ifndef INSTRUCTION_H_
-#define INSTRUCTION_H_
+/*
+ * bytecode.h
+ *
+ *  Created on: 23.11.2015
+ *      Author: Benedikt
+ */
+
+#ifndef BC_OPCODE_H_
+#define BC_OPCODE_H_
 
 #include <stdint.h>
 
-typedef enum {
+enum Opcode{
 	IN_NOP = 0x00,	 /* Do nothing. */
 	IN_ADD = 0x01,	 /* Pops $0 and $1. Pushes $1   $0. */
 	IN_SUB = 0x02,	 /* Pops $0 and $1. Pushes $1 - $0. */
@@ -51,8 +58,8 @@ typedef enum {
 	IN_BSR = 0x30,	 /* Pops $0 and $1. Pushes $1 >> $0. This is a bitwise function. */
 	IN_INC = 0x32,	 /* Pops $0. Pushes $0   1. */
 	IN_DEC = 0x33	 /* Pops $0. Pushes $0 - 1. */
-} Instruction;
+};
 
-typedef uint8_t instr_t;
+typedef uint8_t opcode_t;
 
-#endif /* INSTRUCTION_H_ */
+#endif /* BC_OPCODE_H_ */

@@ -18,7 +18,7 @@ void cpl_write_header(CplState* cs)
 
 }
 
-void cpl_write_instr(CplState* cs, instr_t instr)
+void cpl_write_instr(CplState* cs, opcode_t instr)
 {
 	fputc(instr, cs->dst);
 }

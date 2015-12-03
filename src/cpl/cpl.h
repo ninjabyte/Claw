@@ -10,7 +10,7 @@
 
 #include <stdio.h>
 #include <stdint.h>
-#include "instruction.h"
+#include "opcode.h"
 
 typedef uint32_t permission_t;
 
@@ -43,7 +43,7 @@ typedef struct
 
 void cpl_init(CplState*, CplHeader*, FILE*);
 void cpl_write_header(CplState*);
-void cpl_write_instr(CplState*, instr_t);
+void cpl_write_instr(CplState*, opcode_t);
 void cpl_write_arg8(CplState*, uint8_t);
 void cpl_write_arg16(CplState*, int16_t);
 
