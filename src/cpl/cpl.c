@@ -6,6 +6,7 @@
  */
 
 #include "cpl.h"
+#include "opcodes.h"
 
 void cpl_init(CplState* cs, CplHeader* ch, FILE* fp)
 {

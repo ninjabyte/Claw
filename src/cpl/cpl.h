@@ -10,7 +10,7 @@
 
 #include <stdio.h>
 #include <stdint.h>
-#include "opcode.h"
+#include "opcodes.h"
 
 typedef uint32_t permission_t;
 
