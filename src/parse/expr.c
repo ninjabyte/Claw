@@ -306,7 +306,7 @@ void leaf_operator(operator_t operator)
 			printf("(||)");
 			break;
 		case OP_UNARY_NOT:		/* ! */
-			printf("(||)");
+			printf("(!)");
 			break;
 		case OP_BIT_OR:			/* | */
 			printf("|");
